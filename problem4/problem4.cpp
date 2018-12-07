@@ -15,7 +15,6 @@ void initialize_A()
 		A[i] = random_integer;
 		A_copy[i] = random_integer;
 	}
-
 	return;
 }
 
@@ -81,7 +80,10 @@ bool exclusive_scan_additionTest()
 
 int main()
 {
-	if(exclusive_scan_additionTest()) return 0;
+	if(exclusive_scan_additionTest()){
+		printf("exclusive_scan_additionTest() failed");
+		return 0;
+	}
 	initialize_A();
 	exclusive_scan_addition(A_copy, A_size);
 	return 0;
