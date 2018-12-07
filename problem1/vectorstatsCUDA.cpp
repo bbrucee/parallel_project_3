@@ -1,32 +1,76 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include <limits>
 
-// https://stackoverflow.com/questions/41353787/cuda-copying-arrays-to-gpu
-double *CopyArrayToGPU(double *HostArray, int NumElements)
+// Pseudocode:
+// Spawn threads for each element in the array
+// 1. First half of threads compare themself with an element on the other half of the array and sets the max of the two
+// 2. Half of those threads then compares itself to the thread on the other half of the the half and sets the max of the two
+// 3. Repeat 
+// 4. Maximum element is now in the 0th index and is written
+__global__ void find_maxKernel(double* input_array, int array_max)
 {
-    int bytes = sizeof(double) * NumElements;
-    void *DeviceArray;
+	extern __shared__ double maximum[];
+	// Each thread loads one element from global to shared mem
+    int i = blockIdx.x*blockDim.x + threadIdx.x;
+    int tid =  threadIdx.x;
+    maximum[tid] = input_array[i];
+    __syncthreads;
 
-    // Allocate memory on the GPU for array
-    if (cudaMalloc(&DeviceArray, bytes) != cudaSuccess)
-    {
-        printf("CopyArrayToGPU(): Couldn't allocate mem for array on GPU.");
-        return NULL;
-    }
 
-    // Copy the contents of the host array to the GPU
-    if (cudaMemcpy(DeviceArray, HostArray, bytes, cudaMemcpyHostToDevice) != cudaSuccess)
-    {
-        printf("CopyArrayToGPU(): Couldn't copy host array to GPU.");
-        cudaFree(DeviceArray);
-        return NULL;
-    }
+   	for(int s=1; s<blockDim.x; s*=2){
+   		int index = 2*s*tid;
+   		if(index < blockDim.x){
+   			if(maximum[index] < maximum[index+s])
+   				maximum[index] = maximum[index+s];
+   		}
+   		__syncthreads;
+   	}
 
-    return DeviceArray;
+	if (tid==0) array_max = maximum[0];
 }
 
-/*
+extern void find_max(double* input_array, int input_size)
+{
+	int max_value = 0;
+    find_maxKernel<<<1, input_size>>>(input_array, max_value);
+    cudaDeviceSynchronize();
+    return max_value;
+}
+
+__global__ void find_minKernel(double* input_array, int array_min)
+{
+	extern __shared__ double minimum[];
+	// Each thread loads one element from global to shared mem
+    int i = blockIdx.x*blockDim.x + threadIdx.x;
+    int tid =  threadIdx.x;
+    minimum[tid] = input_array[i];
+    __syncthreads;
+
+
+   	for(int s=1; s<blockDim.x; s*=2){
+   		int index = 2*s*tid;
+   		if(index < blockDim.x){
+   			if(minimum[index] < minimum[index+s])
+   				minimum[index] = minimum[index+s];
+   		}
+   		__syncthreads;
+   	}
+
+	if (tid==0) array_min = minimum[0];
+}
+
+extern void find_min(double* input_array, int input_size)
+{
+	int min_value = 0;
+    find_minKernel<<<1, input_size>>>(input_array, min_value);
+    cudaDeviceSynchronize();
+    return min_value;
+}
+
+
+
 int vectorstatsCUDAtest()
 {
 	// Test function compares our function outputs to values computed using numpy externally
@@ -42,7 +86,7 @@ int vectorstatsCUDAtest()
     printf("Expected std is %f\n", 1.4833984905493947);
     return 0; 
 }
-*/
+
 int main()
 {
 	vectorstatsCUDAtest();
