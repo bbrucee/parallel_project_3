@@ -2,6 +2,9 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+
+using namespace std;
 
 int A_size = 1000000;
 int A[1000000];
@@ -55,6 +58,18 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
     exclusive_scan_block<<<1, input_size>>>(input_array);
     cudaDeviceSynchronize();
     return;
+}
+
+void find_repeats(int* input_array, input_size)
+{
+	vector<int> B, C;
+	for(int i = 0; i < input_size-1; i++){
+		if(input_array[i] == input_array[i+1]) B.push_back(i);
+	}
+	if(B[0] != 0) C.push_back(input_array[0]);
+	for(int j = 0; j < B.size()-1; j++){
+		if(B[j] != B[j+1]) C.push_back(input_array[B[j]]);
+	}	
 }
 
 bool exclusive_scan_additionTest()
