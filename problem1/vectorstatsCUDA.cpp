@@ -7,7 +7,6 @@
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
-double *device_array;
 
 // Pseudocode:
 // Spawn threads for each element in the array
@@ -18,7 +17,7 @@ double *device_array;
 // This is in general a reduction and a similar pseduocode is used for mean/min/std calculations
 
 
-__global__ void find_maxKernel(double* input_array, double array_max)
+__global__ void find_maxKernel(double* input_array, double* array_max)
 {
 	extern __shared__ double maximum[];
 	// Each thread loads one element from global to shared mem
@@ -37,7 +36,7 @@ __global__ void find_maxKernel(double* input_array, double array_max)
    		__syncthreads;
    	}
 
-	if (tid==0) array_max = maximum[0];
+	if (tid==0) array_max[0] = maximum[0];
 }
 
 extern double find_max(double* input_array, int input_size)
@@ -47,10 +46,10 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
-	double d_B;
+	double* d_B;
 	cudaMalloc(&d_B, 1*sizeof(double));
 
-	double max_value = 0;
+	double max_value[1] = {0};
     find_maxKernel<<<1, input_size>>>(d_A, d_B);
     cudaDeviceSynchronize();
 
@@ -62,7 +61,7 @@ extern double find_max(double* input_array, int input_size)
     return max_value;
 }
 
-__global__ void find_minKernel(double* input_array, double array_min)
+__global__ void find_minKernel(double* input_array, double* array_min)
 {
 	extern __shared__ double minimum[];
 	// Each thread loads one element from global to shared mem
@@ -81,7 +80,7 @@ __global__ void find_minKernel(double* input_array, double array_min)
    		__syncthreads;
    	}
 
-	if (tid==0) array_min = minimum[0];
+	if (tid==0) array_min[0] = minimum[0];
 }
 
 extern double find_min(double* input_array, int input_size)
@@ -91,10 +90,10 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
-	double d_B;
+	double* d_B;
 	cudaMalloc(&d_B, 1*sizeof(double));
 
-	double min_value = 0;
+	double min_value[1] = {0};
     find_minKernel<<<1, input_size>>>(d_A, min_value);
     cudaDeviceSynchronize();
 
@@ -103,10 +102,10 @@ extern double find_min(double* input_array, int input_size)
     cudaFree(d_A);
   	cudaFree(d_B);
 
-    return min_value;
+    return min_value[0];
 }
 
-__global__ void find_sumKernel(double* input_array, double out_sum)
+__global__ void find_sumKernel(double* input_array, double* out_sum)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -124,7 +123,7 @@ __global__ void find_sumKernel(double* input_array, double out_sum)
    		__syncthreads;
    	}
 
-	if (tid==0) out_sum = array_sum[0];
+	if (tid==0) out_sum[0] = array_sum[0];
 }
 
 extern double find_mean(double* input_array, int input_size)
@@ -134,10 +133,10 @@ extern double find_mean(double* input_array, int input_size)
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
-	double d_B;
+	double* d_B;
 	cudaMalloc(&d_B, 1*sizeof(double));
 
-	double mean_value = 0;
+	double mean_value[1] = {0};
     find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
 
@@ -151,7 +150,7 @@ extern double find_mean(double* input_array, int input_size)
 }
 
 
-__global__ void find_squaresumKernel(double* input_array, double out_sum)
+__global__ void find_squaresumKernel(double* input_array, double* out_sum)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -169,7 +168,7 @@ __global__ void find_squaresumKernel(double* input_array, double out_sum)
    		__syncthreads;
    	}
 
-	if (tid==0) out_sum = array_sum[0];
+	if (tid==0) out_sum[0] = array_sum[0];
 }
 
 
@@ -180,28 +179,28 @@ extern double find_std(double* input_array, int input_size)
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
-	double d_B;
+	double* d_B;
 	cudaMalloc(&d_B, 1*sizeof(double));
 
-	double d_C;
+	double* d_C;
 	cudaMalloc(&d_C, 1*sizeof(double));
 
-	double mean_value = 0;
-	double squaresum_value = 0;
+	double mean_value[1] = {0};
+	double squaresum_value[1] = {0};
     find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
  	find_squaresumKernel<<1, input_size>>(d_A, squaresum_value);
     cudaDeviceSynchronize();
     cudaMemcpy(squaresum_value, d_C, 1*sizeof(double), cudaMemcpyDeviceToHost);
-    mean_value = mean_value/input_size;
-    squaresum_value = squaresum_value/input_size;
+    mean_value[0] = mean_value[0]/input_size;
+    squaresum_value[0] = squaresum_value[0]/input_size;
 
     cudaFree(d_A);
  	cudaFree(d_B);
   	cudaFree(d_C);
 
-    return sqrt(squaresum_value - mean_value*mean_value);
+    return sqrt(squaresum_value[0] - mean_value[0]*mean_value[0]);
 }
 
 
