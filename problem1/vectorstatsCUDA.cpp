@@ -224,7 +224,7 @@ int vectorstatsCUDAtest2()
 {
 	for(int i = 0; i < N; i++){
 		double random_double = (double)rand() / RAND_MAX;
-    	test_array[i] = f * (1000);
+    	test_array[i] = random_double * (1000);
 	}
     printf("Homebrew min is %f\n", find_min(test_array, N));
     printf("Homebrew max is %f\n", find_max(test_array, N));
