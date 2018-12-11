@@ -41,6 +41,12 @@ __global__ void find_maxKernel(double* input_array, double* array_max, int input
 
 extern double find_max(double* input_array, int input_size)
 {
+	int blockSize;
+	int minGridSize;
+	int gridSize;
+	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, find_maxKernel, 0, N); 
+	gridSize = (N + blockSize - 1) / blockSize; 
+
 	int size = input_size*sizeof(double);
 	double* d_A;
 	cudaMalloc(&d_A, size);
@@ -50,7 +56,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-    find_maxKernel<<<10, 128, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_maxKernel<<<gridSize, blockSize, input_size*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -209,16 +215,16 @@ int vectorstatsCUDAtest1()
 {
 	printf("Running vectorstatsCUDAtest1() \n -------------------------- \n");
 	// Test function compares our function outputs to values computed using numpy externally
-    double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241};
-    int size = 6;
+    double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241, 6.123123, 12.23123};
+    int size = 8;
     printf("Homebrew min is %f\n", find_min(array, size));
     printf("Homebrew max is %f\n", find_max(array, size));
     printf("Homebrew mean is %f\n", find_mean(array, size));
     printf("Homebrew std is %f\n", find_std(array, size));
     printf("Expected min is %f\n", 1.214124);
-    printf("Expected max is %f\n", 5.12314);
-    printf("Expected mean is %f\n", 2.7453876666666663);
-    printf("Expected std is %f\n", 1.4833984905493947);
+    printf("Expected max is %f\n", 12.23123);
+    printf("Expected mean is %f\n", 4.353334875);
+    printf("Expected std is %f\n", 3.42617084818);
     printf(" -------------------------- \n");
     return 0; 
 }
