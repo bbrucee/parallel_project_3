@@ -17,7 +17,7 @@ double test_array[N];
 // This is in general a reduction and a similar pseduocode is used for mean/min/std calculations
 
 
-__global__ void find_maxKernel(double* input_array, double* array_max, input_size)
+__global__ void find_maxKernel(double* input_array, double* array_max, int input_size)
 {
 	extern __shared__ double maximum[];
 	// Each thread loads one element from global to shared mem
