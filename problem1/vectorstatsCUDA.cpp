@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 50000000
+#define N 1000
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
