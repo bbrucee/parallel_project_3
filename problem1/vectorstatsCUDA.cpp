@@ -1,6 +1,8 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include <helper_functions.h>
+#include <nvrtc_helper.h>
 
 #define N 50000000
 
