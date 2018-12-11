@@ -58,7 +58,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaFree(d_A);
   	cudaFree(d_B);
 
-    return max_value;
+    return max_value[0];
 }
 
 __global__ void find_minKernel(double* input_array, double* array_min)
