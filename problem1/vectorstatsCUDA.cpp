@@ -215,7 +215,7 @@ int vectorstatsCUDAtest1()
 {
 	printf("Running vectorstatsCUDAtest1() \n -------------------------- \n");
 	// Test function compares our function outputs to values computed using numpy externally
-    double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241, 6.123123, 12.23123};
+    double array[8] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241, 6.123123, 12.23123};
     int size = 8;
     printf("Homebrew min is %f\n", find_min(array, size));
     printf("Homebrew max is %f\n", find_max(array, size));
