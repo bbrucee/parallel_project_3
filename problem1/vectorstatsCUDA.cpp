@@ -145,8 +145,7 @@ extern double find_mean(double* input_array, int input_size)
 
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
-
-    return mean_value/input_size;
+    return mean_value[0]/input_size;
 }
 
 
