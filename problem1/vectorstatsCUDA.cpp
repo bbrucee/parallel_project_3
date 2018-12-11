@@ -207,7 +207,7 @@ extern double find_std(double* input_array, int input_size)
 
 
 
-int vectorstatsCUDAtest()
+int vectorstatsCUDAtest1()
 {
 	// Test function compares our function outputs to values computed using numpy externally
     double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241};
@@ -223,8 +223,23 @@ int vectorstatsCUDAtest()
     return 0; 
 }
 
+int vectorstatsCUDAtest2()
+{
+	for(int i = 0; i < N; i++){
+		double random_integer = (double) rand() / 1000 ;
+		test_array[i] = random_integer + random_integer*1000;
+	}
+    printf("Homebrew min is %f\n", find_min(test_array, N));
+    printf("Homebrew max is %f\n", find_max(test_array, N));
+    printf("Homebrew mean is %f\n", find_mean(test_array, N));
+    printf("Homebrew std is %f\n", find_std(test_array, N));
+    
+    return 0; 
+}
+
 int main()
 {
-	vectorstatsCUDAtest();
+	vectorstatsCUDAtest1();
+	vectorstatsCUDAtest2();
 	return 0;
 }
