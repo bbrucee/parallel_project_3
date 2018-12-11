@@ -75,13 +75,12 @@ __global__ void find_minKernel(double* input_array, double* array_min)
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
-   			printf("%d \n", index);
    			if(minimum[index] > minimum[index+s])
    				minimum[index] = minimum[index+s];
    		}
+	    printf("%f \n", minimum[tid]);
    		__syncthreads();
    	}
-    printf("%f \n", minimum[tid]);
 
 	if (tid==0) array_min[0] = minimum[0];
 }
