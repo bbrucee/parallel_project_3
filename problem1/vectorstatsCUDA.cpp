@@ -69,6 +69,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     minimum[tid] = input_array[i];
+    fprintf("%f \n", minimum[tid]);
     __syncthreads();
 
    	for(int s=1; s<blockDim.x; s*=2){
