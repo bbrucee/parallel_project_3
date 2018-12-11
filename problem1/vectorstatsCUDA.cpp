@@ -41,9 +41,23 @@ __global__ void find_maxKernel(double* input_array, double &array_max)
 
 extern double find_max(double* input_array, int input_size)
 {
+	int size = input_size*sizeof(double);
+	CUdeviceptr d_A;
+	checkCudaErrors(cuMemAlloc(&d_A, size));
+	checkCudaErrors(cuMemcpyHtoD(d_A, input_array, size));
+
+	CUdeviceptr d_B;
+	checkCudaErrors(cuMemAlloc(&d_B, 1*sizeof(double)));
+
 	double max_value = 0;
-    find_maxKernel<<<1, input_size>>>(input_array, max_value);
+    find_maxKernel<<<1, input_size>>>(d_A, d_B);
     cudaDeviceSynchronize();
+
+	checkCudaErrors(cuMemcpyDtoH(max_value, d_B, 1*sizeof(double)));
+
+	checkCudaErrors(cuMemFree(d_A));
+  	checkCudaErrors(cuMemFree(d_B));
+
     return max_value;
 }
 
@@ -71,9 +85,23 @@ __global__ void find_minKernel(double* input_array, double &array_min)
 
 extern double find_min(double* input_array, int input_size)
 {
+	int size = input_size*sizeof(double);
+	CUdeviceptr d_A;
+	checkCudaErrors(cuMemAlloc(&d_A, size));
+	checkCudaErrors(cuMemcpyHtoD(d_A, input_array, size));
+
+	CUdeviceptr d_B;
+	checkCudaErrors(cuMemAlloc(&d_B, 1*sizeof(double)));
+
 	double min_value = 0;
-    find_minKernel<<<1, input_size>>>(input_array, min_value);
+    find_minKernel<<<1, input_size>>>(d_A, min_value);
     cudaDeviceSynchronize();
+
+    checkCudaErrors(cuMemcpyDtoH(min_value, d_B, 1*sizeof(double)));
+
+    checkCudaErrors(cuMemFree(d_A));
+  	checkCudaErrors(cuMemFree(d_B));
+
     return min_value;
 }
 
@@ -100,9 +128,24 @@ __global__ void find_sumKernel(double* input_array, double &out_sum)
 
 extern double find_mean(double* input_array, int input_size)
 {
+	int size = input_size*sizeof(double);
+	CUdeviceptr d_A;
+	checkCudaErrors(cuMemAlloc(&d_A, size));
+	checkCudaErrors(cuMemcpyHtoD(d_A, input_array, size));
+
+	CUdeviceptr d_B;
+	checkCudaErrors(cuMemAlloc(&d_B, 1*sizeof(double)));
+
 	double mean_value = 0;
-    find_sumKernel<<<1, input_size>>>(input_array, mean_value);
+    find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
+
+    checkCudaErrors(cuMemFree(d_A));
+  	checkCudaErrors(cuMemFree(d_B));
+
+    checkCudaErrors(cuMemcpyDtoH(mean_value, d_B, 1*sizeof(double)));
+
+
     return mean_value/input_size;
 }
 
@@ -131,14 +174,32 @@ __global__ void find_squaresumKernel(double* input_array, double &out_sum)
 
 extern double find_std(double* input_array, int input_size)
 {
+	int size = input_size*sizeof(double);
+	CUdeviceptr d_A;
+	checkCudaErrors(cuMemAlloc(&d_A, size));
+	checkCudaErrors(cuMemcpyHtoD(d_A, input_array, size));
+
+	CUdeviceptr d_B;
+	checkCudaErrors(cuMemAlloc(&d_B, 1*sizeof(double)));
+
+	CUdeviceptr d_C;
+	checkCudaErrors(cuMemAlloc(&d_C, 1*sizeof(double)));
+
 	double mean_value = 0;
 	double squaresum_value = 0;
-    find_sumKernel<<<1, input_size>>>(input_array, mean_value);
+    find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
- 	find_squaresumKernel<<1, input_size>>(input_array, squaresum_value);
+	checkCudaErrors(cuMemcpyDtoH(mean_value, d_B, 1*sizeof(double)));
+ 	find_squaresumKernel<<1, input_size>>(d_A, squaresum_value);
     cudaDeviceSynchronize();
+	checkCudaErrors(cuMemcpyDtoH(squaresum_value, d_C, 1*sizeof(double)));
     mean_value = mean_value/input_size;
     squaresum_value = squaresum_value/input_size;
+
+    checkCudaErrors(cuMemFree(d_A));
+ 	checkCudaErrors(cuMemFree(d_B));
+  	checkCudaErrors(cuMemFree(d_C));
+
     return sqrt(squaresum_value - mean_value*mean_value);
 }
 
