@@ -216,12 +216,12 @@ int vectorstatsCUDAtest()
 	// Test function compares our function outputs to values computed using numpy externally
     double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241};
     int size = 6;
-    printf("Homebrew max is %f\n", find_max(array, size));
     printf("Homebrew min is %f\n", find_min(array, size));
+    printf("Homebrew max is %f\n", find_max(array, size));
     printf("Homebrew mean is %f\n", find_mean(array, size));
     printf("Homebrew std is %f\n", find_std(array, size));
-    printf("Expected max is %f\n", 5.12314);
     printf("Expected min is %f\n", 1.214124);
+    printf("Expected max is %f\n", 5.12314);
     printf("Expected mean is %f\n", 2.7453876666666663);
     printf("Expected std is %f\n", 1.4833984905493947);
     return 0; 
