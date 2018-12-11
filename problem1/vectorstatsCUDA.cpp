@@ -45,7 +45,7 @@ extern double find_max(double* input_array, int input_size)
 	int size = input_size*sizeof(double);
 	CUdeviceptr d_A;
 	cuMemAlloc(&d_A, size);
-	cuMemcpyHtoD(d_A, input_array, size);
+	cuMemcpyHtoD((void *)d_A, input_array, size);
 
 	CUdeviceptr d_B;
 	cuMemAlloc(&d_B, 1*sizeof(double));
