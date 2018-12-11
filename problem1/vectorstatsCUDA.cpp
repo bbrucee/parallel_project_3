@@ -63,8 +63,10 @@ extern double find_max(double* input_array, int input_size)
 
 __global__ void find_minKernel(double* input_array, double* array_min)
 {
-	printf("%d", blockIdx.x);
+	printf("%d\n", threadIdx.x);
 	extern __shared__ double minimum[];
+	printf("%d\n", threadIdx.x);
+
 	// Each thread loads one element from global to shared mem
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
