@@ -24,7 +24,7 @@ __global__ void find_maxKernel(double* input_array, double* array_max)
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     maximum[tid] = input_array[i];
-    __syncthreads;
+    __syncthreads();
 
 
    	for(int s=1; s<blockDim.x; s*=2){
@@ -33,7 +33,7 @@ __global__ void find_maxKernel(double* input_array, double* array_max)
    			if(maximum[index] < maximum[index+s])
    				maximum[index] = maximum[index+s];
    		}
-   		__syncthreads;
+   		__syncthreads();
    	}
 
 	if (tid==0) array_max[0] = maximum[0];
@@ -69,7 +69,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
     int tid =  threadIdx.x;
     printf("%d",tid);
     minimum[tid] = input_array[i];
-    __syncthreads;
+    __syncthreads();
 
 
    	for(int s=1; s<blockDim.x; s*=2){
@@ -78,7 +78,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
    			if(minimum[index] < minimum[index+s])
    				minimum[index] = minimum[index+s];
    		}
-   		__syncthreads;
+   		__syncthreads();
    	}
 
 	if (tid==0) array_min[0] = minimum[0];
@@ -95,7 +95,6 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
-	printf("%f", input_array[0]);
     find_minKernel<<<1, input_size>>>(d_A, min_value);
     cudaDeviceSynchronize();
 
@@ -114,7 +113,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum)
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     array_sum[tid] = input_array[i];
-    __syncthreads;
+    __syncthreads();
 
 
    	for(int s=1; s<blockDim.x; s*=2){
@@ -122,7 +121,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum)
    		if(index < blockDim.x){
 			array_sum[index] += array_sum[index+s];
    		}
-   		__syncthreads;
+   		__syncthreads();
    	}
 
 	if (tid==0) out_sum[0] = array_sum[0];
@@ -159,7 +158,7 @@ __global__ void find_squaresumKernel(double* input_array, double* out_sum)
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     array_sum[tid] = input_array[i]*input_array[i];
-    __syncthreads;
+    __syncthreads();
 
 
    	for(int s=1; s<blockDim.x; s*=2){
@@ -167,7 +166,7 @@ __global__ void find_squaresumKernel(double* input_array, double* out_sum)
    		if(index < blockDim.x){
 			array_sum[index] += array_sum[index+s]*array_sum[index+s];
    		}
-   		__syncthreads;
+   		__syncthreads();
    	}
 
 	if (tid==0) out_sum[0] = array_sum[0];
