@@ -67,7 +67,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
 	// Each thread loads one element from global to shared mem
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
-    printf("%f",tid);
+    printf("%d",tid);
     minimum[tid] = input_array[i];
     __syncthreads;
 
@@ -95,6 +95,7 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
+	printf("%f", input_array[0]);
     find_minKernel<<<1, input_size>>>(d_A, min_value);
     cudaDeviceSynchronize();
 
