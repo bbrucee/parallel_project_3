@@ -56,6 +56,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
+	printf("%d, %d, %d\n", gridSize, blockSize, (input_size/blockSize));
     find_maxKernel<<<gridSize, blockSize, (input_size/blockSize)*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
