@@ -88,14 +88,14 @@ extern double find_min(double* input_array, int input_size)
 {
 	int size = input_size*sizeof(double);
 	double* d_A;
-	cudaMalloc((void**)&d_A, size);
+	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double* d_B;
-	cudaMalloc((void**)&d_B, 1*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
-    find_minKernel<<<1, input_size>>>(d_A, min_value);
+    find_minKernel<<<1, input_size>>>(d_A, d_B);
 
 	cudaError_t cudaerr = cudaDeviceSynchronize();
     printf("Kernel executed!\n");
