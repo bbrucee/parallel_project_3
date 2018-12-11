@@ -17,7 +17,7 @@ double *device_array;
 // This is in general a reduction and a similar pseduocode is used for mean/min/std calculations
 
 
-__global__ void find_maxKernel(double* input_array, double array_max)
+__global__ void find_maxKernel(double* input_array, double &array_max)
 {
 	extern __shared__ double maximum[];
 	// Each thread loads one element from global to shared mem
@@ -47,7 +47,7 @@ extern double find_max(double* input_array, int input_size)
     return max_value;
 }
 
-__global__ void find_minKernel(double* input_array, double array_min)
+__global__ void find_minKernel(double* input_array, double &array_min)
 {
 	extern __shared__ double minimum[];
 	// Each thread loads one element from global to shared mem
@@ -77,7 +77,7 @@ extern double find_min(double* input_array, int input_size)
     return min_value;
 }
 
-__global__ void find_sumKernel(double* input_array, double out_sum)
+__global__ void find_sumKernel(double* input_array, double &out_sum)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -107,7 +107,7 @@ extern double find_mean(double* input_array, int input_size)
 }
 
 
-__global__ void find_squaresumKernel(double* input_array, double out_sum)
+__global__ void find_squaresumKernel(double* input_array, double &out_sum)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -134,6 +134,7 @@ extern double find_std(double* input_array, int input_size)
 	double mean_value = 0;
 	double squaresum_value = 0;
     find_sumKernel<<<1, input_size>>>(input_array, mean_value);
+    cudaDeviceSynchronize();
  	find_squaresumKernel<<1, input_size>>(input_array, squaresum_value);
     cudaDeviceSynchronize();
     mean_value = mean_value/input_size;
