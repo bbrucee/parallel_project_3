@@ -82,6 +82,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
    		}
    		__syncthreads();
    	}
+	printf("%d\n", threadIdx.x);
 
 	if (tid==0) array_min[0] = minimum[0];
 }
