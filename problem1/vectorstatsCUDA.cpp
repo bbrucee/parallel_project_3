@@ -65,7 +65,6 @@ __global__ void find_minKernel(double* input_array, double* array_min)
 {
 	printf("%d\n", threadIdx.x);
 	extern __shared__ double minimum[];
-	printf("%d\n", threadIdx.x);
 
 	// Each thread loads one element from global to shared mem
     int i = blockIdx.x*blockDim.x + threadIdx.x;
@@ -73,6 +72,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
     minimum[tid] = input_array[i];
     __syncthreads();
 
+	printf("%d\n", threadIdx.x);
 
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
