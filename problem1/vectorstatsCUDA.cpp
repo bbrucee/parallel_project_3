@@ -50,7 +50,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-    find_maxKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_maxKernel<<<16, 128, input_size*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -219,6 +219,7 @@ int vectorstatsCUDAtest1()
     printf("Expected max is %f\n", 5.12314);
     printf("Expected mean is %f\n", 2.7453876666666663);
     printf("Expected std is %f\n", 1.4833984905493947);
+    printf(" -------------------------- \n");
     return 0; 
 }
 
@@ -233,7 +234,8 @@ int vectorstatsCUDAtest2()
     printf("Homebrew max is %f\n", find_max(test_array, N));
     printf("Homebrew mean is %f\n", find_mean(test_array, N));
     printf("Homebrew std is %f\n", find_std(test_array, N));
-    
+    printf(" -------------------------- \n");
+
     return 0; 
 }
 
