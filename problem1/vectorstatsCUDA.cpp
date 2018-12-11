@@ -143,7 +143,7 @@ extern double find_mean(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double mean_value[1] = {0};
-    find_sumKernel<<<1, input_size>>>(d_A, mean_value);
+    find_sumKernel<<<1, input_size>>>(d_A, d_B);
     cudaDeviceSynchronize();
 
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -193,10 +193,10 @@ extern double find_std(double* input_array, int input_size)
 
 	double mean_value[1] = {0};
 	double squaresum_value[1] = {0};
-    find_sumKernel<<<1, input_size>>>(d_A, mean_value);
+    find_sumKernel<<<1, input_size>>>(d_A, d_B);
     cudaDeviceSynchronize();
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
- 	// find_squaresumKernel<<1, input_size>>(d_A, squaresum_value);
+ 	find_squaresumKernel<<1, input_size>>(d_A, d_C);
     cudaDeviceSynchronize();
     cudaMemcpy(squaresum_value, d_C, 1*sizeof(double), cudaMemcpyDeviceToHost);
     mean_value[0] = mean_value[0]/input_size;
