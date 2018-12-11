@@ -71,11 +71,11 @@ __global__ void find_minKernel(double* input_array, double* array_min)
     minimum[tid] = input_array[i];
     printf("%f \n", minimum[tid]);
     __syncthreads();
-
+    printf("%d\n", sizeof(input_array));
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
-   			if((minimum[index] > minimum[index+s]) && ((index+s) < sizeof(input_array)/sizeof(double))){
+   			if((minimum[index] > minimum[index+s]) && ((index+s) < (sizeof(input_array)/sizeof(double)))){
 				printf("%d \n", index+s);
    				minimum[index] = minimum[index+s];
    			}
