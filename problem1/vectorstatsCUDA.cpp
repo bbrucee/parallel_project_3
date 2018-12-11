@@ -50,7 +50,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-    find_maxKernel<<<16, 128, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_maxKernel<<<10, 128, input_size*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
