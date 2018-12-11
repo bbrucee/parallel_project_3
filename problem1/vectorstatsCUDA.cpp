@@ -96,12 +96,7 @@ extern double find_min(double* input_array, int input_size)
 
 	double min_value[1] = {0};
     find_minKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B);
-
-	cudaError_t cudaerr = cudaDeviceSynchronize();
-    printf("Kernel executed!\n");
-    if (cudaerr != cudaSuccess)
-        printf("kernel launch failed with error \"%s\".\n",
-                cudaGetErrorString(cudaerr));
+	cudaDeviceSynchronize();
 
     cudaMemcpy(min_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
