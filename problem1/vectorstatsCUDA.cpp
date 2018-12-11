@@ -41,10 +41,6 @@ __global__ void find_maxKernel(double* input_array, double* array_max, int input
 
 extern double find_max(double* input_array, int input_size)
 {
-	int blockSize;
-	int minGridSize;
-	int gridSize;
-	cudaOccupancyMaxPotentialBlockSize(&minGridSize, &blockSize, find_maxKernel, 0, N); 
 	gridSize = (N + blockSize - 1) / blockSize; 
 
 	int size = input_size*sizeof(double);
@@ -56,8 +52,8 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-	printf("%d, %d, %d\n", gridSize, blockSize, (input_size/blockSize));
-    find_maxKernel<<<gridSize, blockSize, (input_size/blockSize)*sizeof(double)>>>(d_A, d_B, input_size);
+
+    find_maxKernel<<<4, 256, (input_size/blockSize)*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
