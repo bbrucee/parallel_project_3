@@ -206,6 +206,7 @@ extern double find_std(double* input_array, int input_size)
 
 int vectorstatsCUDAtest1()
 {
+	printf("Running vectorstatsCUDAtest1() \n -------------------------- \n");
 	// Test function compares our function outputs to values computed using numpy externally
     double array[6] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241};
     int size = 6;
@@ -222,6 +223,7 @@ int vectorstatsCUDAtest1()
 
 int vectorstatsCUDAtest2()
 {
+	printf("Running vectorstatsCUDAtest2(), N is %d \n -------------------------- \n", N);	
 	for(int i = 0; i < N; i++){
 		double random_double = (double)rand() / RAND_MAX;
     	test_array[i] = random_double * (1000);
