@@ -61,7 +61,7 @@ extern double find_max(double* input_array, int input_size)
     return max_value[0];
 }
 
-__global__ void find_minKernel(double* input_array, double* array_min)
+__global__ void find_minKernel(double* input_array, double* array_min, int input_size)
 {
 	extern __shared__ double minimum[];
 
@@ -75,7 +75,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
-   			if((minimum[index] > minimum[index+s]) && ((index+s) < (sizeof(input_array)/sizeof(double)))){
+   			if((minimum[index] > minimum[index+s]) && ((index+s) < input_size)){
 				printf("%d \n", index+s);
    				minimum[index] = minimum[index+s];
    			}
@@ -96,7 +96,7 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
-    find_minKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B);
+    find_minKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B, input_size);
 	cudaDeviceSynchronize();
 
     cudaMemcpy(min_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
