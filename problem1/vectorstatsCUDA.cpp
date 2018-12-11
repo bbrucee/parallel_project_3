@@ -48,7 +48,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double d_B;
-	cuMemAlloc(&d_B, 1*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value = 0;
     find_maxKernel<<<1, input_size>>>(d_A, d_B);
@@ -56,8 +56,8 @@ extern double find_max(double* input_array, int input_size)
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
-	cuMemFree(d_A);
-  	cuMemFree(d_B);
+	cudaFree(d_A);
+  	cudaFree(d_B);
 
     return max_value;
 }
@@ -92,7 +92,7 @@ extern double find_min(double* input_array, int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double d_B;
-	cuMemAlloc(&d_B, 1*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value = 0;
     find_minKernel<<<1, input_size>>>(d_A, min_value);
@@ -100,8 +100,8 @@ extern double find_min(double* input_array, int input_size)
 
     cudaMemcpy(min_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
-    cuMemFree(d_A);
-  	cuMemFree(d_B);
+    cudaFree(d_A);
+  	cudaFree(d_B);
 
     return min_value;
 }
@@ -135,14 +135,14 @@ extern double find_mean(double* input_array, int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double d_B;
-	cuMemAlloc(&d_B, 1*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double mean_value = 0;
     find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
 
-    cuMemFree(d_A);
-  	cuMemFree(d_B);
+    cudaFree(d_A);
+  	cudaFree(d_B);
 
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
@@ -181,10 +181,10 @@ extern double find_std(double* input_array, int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double d_B;
-	cuMemAlloc(&d_B, 1*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double d_C;
-	cuMemAlloc(&d_C, 1*sizeof(double));
+	cudaMalloc(&d_C, 1*sizeof(double));
 
 	double mean_value = 0;
 	double squaresum_value = 0;
@@ -197,9 +197,9 @@ extern double find_std(double* input_array, int input_size)
     mean_value = mean_value/input_size;
     squaresum_value = squaresum_value/input_size;
 
-    cuMemFree(d_A);
- 	cuMemFree(d_B);
-  	cuMemFree(d_C);
+    cudaFree(d_A);
+ 	cudaFree(d_B);
+  	cudaFree(d_C);
 
     return sqrt(squaresum_value - mean_value*mean_value);
 }
