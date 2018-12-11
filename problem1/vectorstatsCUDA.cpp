@@ -36,7 +36,7 @@ __global__ void find_maxKernel(double* input_array, double* array_max, int input
    		__syncthreads();
    	}
 
-	if (tid==0) array_max[0] = maximum[0];
+	if (tid==0) array_max[blockIdx.x] = maximum[0];
 }
 
 extern double find_max(double* input_array, int input_size)
@@ -70,6 +70,7 @@ __global__ void find_minKernel(double* input_array, double* array_min, int input
     int tid =  threadIdx.x;
     minimum[tid] = input_array[i];
     __syncthreads();
+
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
@@ -79,7 +80,7 @@ __global__ void find_minKernel(double* input_array, double* array_min, int input
    		}
    		__syncthreads();
    	}
-	if (tid==0) array_min[0] = minimum[0];
+	if (tid==0) array_min[blockIdx.x] = minimum[0];
 }
 
 extern double find_min(double* input_array, int input_size)
@@ -122,7 +123,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum, int input_s
    		__syncthreads();
    	}
 
-	if (tid==0) out_sum[0] = array_sum[0];
+	if (tid==0) out_sum[blockIdx.x] = array_sum[0];
 }
 
 extern double find_mean(double* input_array, int input_size)
@@ -167,7 +168,7 @@ __global__ void find_squaresumKernel(double* input_array, double* out_sum, int i
    		__syncthreads();
    	}
 
-	if (tid==0) out_sum[0] = array_sum[0];
+	if (tid==0) out_sum[blockIdx.x] = array_sum[0];
 }
 
 
