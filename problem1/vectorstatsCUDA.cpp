@@ -69,14 +69,11 @@ __global__ void find_minKernel(double* input_array, double* array_min, int input
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     minimum[tid] = input_array[i];
-    printf("%f \n", minimum[tid]);
     __syncthreads();
-    printf("%d\n", sizeof(input_array));
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
    			if((minimum[index] > minimum[index+s]) && ((index+s) < input_size)){
-				printf("%d \n", index+s);
    				minimum[index] = minimum[index+s];
    			}
    		}
@@ -226,8 +223,8 @@ int vectorstatsCUDAtest1()
 int vectorstatsCUDAtest2()
 {
 	for(int i = 0; i < N; i++){
-		double random_integer = (double) rand() / 1000 ;
-		test_array[i] = random_integer + random_integer*1000;
+		double random_double = (double)rand() / RAND_MAX;
+    	test_array[i] = f * (1000);
 	}
     printf("Homebrew min is %f\n", find_min(test_array, N));
     printf("Homebrew max is %f\n", find_max(test_array, N));
