@@ -67,6 +67,7 @@ __global__ void find_minKernel(double* input_array, double* array_min)
 	// Each thread loads one element from global to shared mem
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
+    printf("%f",tid)
     minimum[tid] = input_array[i];
     __syncthreads;
 
@@ -140,10 +141,11 @@ extern double find_mean(double* input_array, int input_size)
     find_sumKernel<<<1, input_size>>>(d_A, mean_value);
     cudaDeviceSynchronize();
 
+    cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
+
     cudaFree(d_A);
   	cudaFree(d_B);
 
-    cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
     return mean_value[0]/input_size;
 }
