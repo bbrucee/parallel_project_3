@@ -52,7 +52,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-    find_maxKernel<<<4, 256, (input_size/4)*sizeof(double)>>>(d_A, d_B, input_size);
+    find_maxKernel<<<4, 256, 256*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -96,7 +96,7 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
-    find_minKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_minKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
 	cudaDeviceSynchronize();
 
     cudaMemcpy(min_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -139,7 +139,7 @@ extern double find_mean(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double mean_value[1] = {0};
-    find_sumKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_sumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -189,10 +189,10 @@ extern double find_std(double* input_array, int input_size)
 
 	double mean_value[1] = {0};
 	double squaresum_value[1] = {0};
-    find_sumKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_B, input_size);
+    find_sumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
- 	find_squaresumKernel<<<1, input_size, input_size*sizeof(double)>>>(d_A, d_C, input_size);
+ 	find_squaresumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_C, input_size);
     cudaDeviceSynchronize();
     cudaMemcpy(squaresum_value, d_C, 1*sizeof(double), cudaMemcpyDeviceToHost);
     mean_value[0] = mean_value[0]/input_size;
