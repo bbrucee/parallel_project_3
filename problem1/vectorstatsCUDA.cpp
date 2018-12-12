@@ -259,7 +259,6 @@ void set_blocks(long int input_size)
 	while(num_threads*num_blocks < input_size){
 		num_blocks++;
 	}
-	printf("%d \n", num_blocks);
 }
 
 int main()
@@ -268,5 +267,7 @@ int main()
 	vectorstatsCUDAtest1();
 	set_blocks(N);
 	vectorstatsCUDAtest2();
+	cudaError_t error = cudaGetLastError();
+	if(error != cudaSuccess) printf("CUDA error: %s\n", cudaGetErrorString(error));
 	return 0;
 }
