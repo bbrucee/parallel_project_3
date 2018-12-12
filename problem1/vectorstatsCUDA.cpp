@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 2048
+#define N 1000000
 
 int num_threads = 512;
 int num_blocks = 0;
