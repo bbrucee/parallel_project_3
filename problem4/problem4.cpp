@@ -108,6 +108,9 @@ int main()
 	}
 	initialize_A();
 	exclusive_scan_addition(A_copy, A_size);
-	printf("It ran and possible worked\n");
+	printf("It ran and possibly worked\n");
+	for(int i = 0; i < A_size; i ++){
+		printf("%d \n", A_copy[i]);
+	}
 	return 0;
 }
