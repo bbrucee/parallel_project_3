@@ -6,9 +6,9 @@
 
 using namespace std;
 
-int A_size = 1024;
-int A[1024];
-int A_copy[1024];
+int A_size = 1000;
+int A[1000];
+int A_copy[1000];
 
 
 void initialize_A()
@@ -55,12 +55,12 @@ __global__ void exclusive_scan_block(int* input_array)
 
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
-
+	int size_root = int(sqrt(input_size));
 	int size = input_size*sizeof(int);
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-    exclusive_scan_block<<<1, dim3(1000, 1000)>>>(d_A);
+    exclusive_scan_block<<<1, dim3(size_root, size_root)>>>(d_A);
     cudaDeviceSynchronize();
     cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
 	cudaFree(d_A);
