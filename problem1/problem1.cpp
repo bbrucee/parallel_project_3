@@ -12,6 +12,59 @@ int num_threads = 1000;
 int num_blocks = 1;
 double test_array[N];
 
+
+double find_maxCPU(double* input_array, int input_size)
+{
+    if(input_size == 0)
+        return 0;
+    double max_value =  std::numeric_limits<double>::min();
+    for(int i = 0; i<input_size; i++){
+        if(input_array[i] > max_value)
+            max_value = input_array[i];
+    }
+    return max_value;
+}
+    
+double find_minCPU(double* input_array, int input_size)
+{
+    if(input_size == 0)
+        return 0;
+    double min_value = std::numeric_limits<double>::max();
+    for(int i = 0; i<input_size; i++){
+        if(input_array[i] < min_value)
+            min_value = input_array[i];
+    }
+    return min_value;
+
+}
+
+double find_meanCPU(double* input_array, int input_size)
+{
+    if(input_size == 0)
+        return 0;
+    double mean_value = 0;
+    for(int i = 0; i<input_size; i++){
+        mean_value += input_array[i];
+    }
+    mean_value = mean_value/input_size;
+    return mean_value;
+}
+    
+double find_stdCPU(double* input_array, int input_size)
+{
+    if(input_size == 0)
+        return 0;
+    double mean_value = 0;
+    double square_sum = 0;
+    for(int i = 0; i<input_size; i++){
+        mean_value += input_array[i];
+        square_sum += input_array[i]*input_array[i];
+    }
+    mean_value = mean_value/input_size;
+    square_sum = sqrt((square_sum/input_size) - (mean_value*mean_value));
+    return square_sum;
+}
+
 // Pseudocode for CUDA:
 // Spawn threads for each element in the array
 // 1. First half of threads compare themself with an element on the other half of the array and sets the max of the two
@@ -216,58 +269,6 @@ extern double find_std(double* input_array, long int input_size)
     squaresum_value[0] = squaresum_value[0]/input_size;
 
     return sqrt(squaresum_value[0] - mean_value[0]*mean_value[0]);
-}
-
-double find_maxCPU(double* input_array, int input_size)
-{
-    if(input_size == 0)
-        return 0;
-    double max_value =  std::numeric_limits<double>::min();
-    for(int i = 0; i<input_size; i++){
-        if(input_array[i] > max_value)
-            max_value = input_array[i];
-    }
-    return max_value;
-}
-    
-double find_minCPU(double* input_array, int input_size)
-{
-    if(input_size == 0)
-        return 0;
-    double min_value = std::numeric_limits<double>::max();
-    for(int i = 0; i<input_size; i++){
-        if(input_array[i] < min_value)
-            min_value = input_array[i];
-    }
-    return min_value;
-
-}
-
-double find_meanCPU(double* input_array, int input_size)
-{
-    if(input_size == 0)
-        return 0;
-    double mean_value = 0;
-    for(int i = 0; i<input_size; i++){
-        mean_value += input_array[i];
-    }
-    mean_value = mean_value/input_size;
-    return mean_value;
-}
-    
-double find_stdCPU(double* input_array, int input_size)
-{
-    if(input_size == 0)
-        return 0;
-    double mean_value = 0;
-    double square_sum = 0;
-    for(int i = 0; i<input_size; i++){
-        mean_value += input_array[i];
-        square_sum += input_array[i]*input_array[i];
-    }
-    mean_value = mean_value/input_size;
-    square_sum = sqrt((square_sum/input_size) - (mean_value*mean_value));
-    return square_sum;
 }
 
 int vectorstatsCPUtest()
