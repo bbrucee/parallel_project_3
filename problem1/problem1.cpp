@@ -359,5 +359,6 @@ int main()
 	vectorstatsCUDAtest1();
 	set_blocks(N);
 	vectorstatsCUDAtest2();
+  vectorstatsResultsCompared();
 	return 0;
 }
