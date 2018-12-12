@@ -5,7 +5,7 @@
 #include <limits>
 #include <time.h>
 
-#define N 150000000
+#define N 200000000
 
 int num_threads = 1000;
 int num_blocks = 1;
