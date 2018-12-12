@@ -105,10 +105,6 @@ extern double find_min(double* input_array, long int input_size)
     cudaFree(d_A);
   	cudaFree(d_B);
 
-  	for(int i=0; i<num_blocks; i++){
-  		printf("%f \n", min_value[i]);
-  	}
-
     return min_value[0];
 }
 
