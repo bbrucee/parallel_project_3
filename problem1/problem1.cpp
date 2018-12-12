@@ -406,6 +406,46 @@ int vectorstatsTiming()
     return 0; 
 }
 
+extern void GPUmemorytransferTiming(double* input_array, long int input_size)
+{
+  printf("Running GPUmemorytransferTiming,  N is %d \n -------------------------- \n", N);  
+  clock_t start = clock(), diff;
+  int size = input_size*sizeof(double);
+  double* d_A;
+  cudaMalloc(&d_A, size);
+  cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
+
+  double* d_B;
+  cudaMalloc(&d_B, num_blocks*sizeof(double));
+
+  double* d_C;
+  cudaMalloc(&d_C, num_blocks*sizeof(double));
+
+  diff = clock() - start;
+  int milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+  printf("Time taken to allocate and transfer the input array of size N: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+
+
+  double mean_value[num_blocks] = {0};
+  double squaresum_value[num_blocks] = {0};
+
+  find_sumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
+  cudaDeviceSynchronize();
+  find_squaresumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_C, input_size);
+  cudaDeviceSynchronize();
+  start = clock(), diff;
+  cudaMemcpy(mean_value, d_B, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
+  cudaMemcpy(squaresum_value, d_C, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
+  cudaFree(d_A);
+  cudaFree(d_B);
+  cudaFree(d_C);
+  diff = clock() - start;
+  int milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+  printf("Time taken to transfer the two output arrays of size N and free CUDA memory: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+
+  printf(" -------------------------- \n");
+}
+
 
 void set_blocks(long int input_size)
 {
@@ -423,5 +463,6 @@ int main()
 	vectorstatsCUDAtest2();
   vectorstatsResultsCompared();
   vectorstatsTiming();
+  GPUmemorytransferTiming(test_array, N);
 	return 0;
 }
