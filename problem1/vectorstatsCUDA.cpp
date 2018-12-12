@@ -27,7 +27,6 @@ __global__ void find_maxKernel(double* input_array, double* array_max, long int 
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     maximum[tid] = input_array[i];
-    // printf("%d, %f\n", i, input_array[i]);
     __syncthreads();
 
    	for(int s=1; s<blockDim.x; s*=2){
@@ -51,13 +50,13 @@ extern double find_max(double* input_array, long int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 
 	double* d_B;
-	cudaMalloc(&d_B, num_blocks*sizeof(double));
+	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
     find_maxKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(max_value, d_B, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
+    cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
 
 	cudaFree(d_A);
   	cudaFree(d_B);
