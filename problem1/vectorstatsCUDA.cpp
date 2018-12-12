@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 1024
+#define N 2048
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
