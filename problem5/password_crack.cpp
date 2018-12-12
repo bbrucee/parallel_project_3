@@ -1,4 +1,25 @@
-#include "password_crack.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <iostream>
+#include <functional>
+#include <string>
+
+#include <math.h>
+#include <signal.h>
+#include <ctime>
+#include <pthread.h>
+#include <unistd.h>
+
+char map(int convert);
+void* crack(void* args);
+struct params {
+        size_t password;
+        int passLen;
+        int totalThreads;
+        int currThread;
+};
 
 //Set size is 36 characters and one blank character
 float setSize = 36;
