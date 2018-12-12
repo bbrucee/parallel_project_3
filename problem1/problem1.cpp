@@ -275,7 +275,7 @@ int vectorstatsCPUtest()
     // Test function compares our function outputs to values computed using numpy externally
     double array[8] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241, 6.123123, 12.23123};
     int size = 8;
-    printf("Running vectorstatsCPUtest()\n -------------------------- \n", N);  
+    printf("Running vectorstatsCPUtest()\n -------------------------- \n");  
     printf("Homebrew min is %f\n", find_minCPU(array, size));
     printf("Homebrew max is %f\n", find_maxCPU(array, size));
     printf("Homebrew mean is %f\n", find_meanCPU(array, size));
@@ -327,7 +327,7 @@ int vectorstatsCUDAtest2()
 
 int vectorstatsResultsCompared()
 {
-  printf("Running vectorstatsCUDAtest2(), N is %d \n -------------------------- \n", N);  
+  printf("Running vectorstatsResultsCompared(),  N is %d \n -------------------------- \n", N);  
   for(int i = 0; i < N; i++){
     double random_double = (double)rand() / RAND_MAX;
       test_array[i] = random_double * (1000);
