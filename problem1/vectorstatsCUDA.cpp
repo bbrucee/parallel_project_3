@@ -27,8 +27,8 @@ __global__ void find_maxKernel(double* input_array, double* array_max, long int 
     int i = blockIdx.x*blockDim.x + threadIdx.x;
     int tid =  threadIdx.x;
     maximum[tid] = input_array[i];
+    printf("%d, %f\n", i, input_array[i]);
     __syncthreads();
-
 
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
