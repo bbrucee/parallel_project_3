@@ -5,7 +5,7 @@
 #include <limits>
 #include <time.h>
 
-#define N 200000000
+#define N 50000000
 
 int num_threads = 1000;
 int num_blocks = 1;
@@ -456,13 +456,13 @@ void set_blocks(long int input_size)
 
 int main()
 {
-  vectorstatsCPUtest();
-	set_blocks(8);
-	vectorstatsCUDAtest1();
-	set_blocks(N);
-	vectorstatsCUDAtest2();
-  vectorstatsResultsCompared();
-  // vectorstatsTiming();
-  // GPUmemorytransferTiming(test_array, N);
+ //  vectorstatsCPUtest();
+	// set_blocks(8);
+	// vectorstatsCUDAtest1();
+	// set_blocks(N);
+	// vectorstatsCUDAtest2();
+ //  vectorstatsResultsCompared();
+  vectorstatsTiming();
+  GPUmemorytransferTiming(test_array, N);
 	return 0;
 }
