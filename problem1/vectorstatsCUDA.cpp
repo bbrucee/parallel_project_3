@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 10000000
+#define N 200000000
 
 int num_threads = 512;
 int num_blocks = 0;
@@ -207,7 +207,7 @@ extern double find_std(double* input_array, int input_size)
     cudaFree(d_A);
  	cudaFree(d_B);
   	cudaFree(d_C);
-  	
+
   	for(int i=1; i<num_blocks;i++){
   		mean_value[0] += mean_value[i];
   		squaresum_value[0] += squaresum_value[i];
