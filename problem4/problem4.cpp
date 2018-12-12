@@ -55,6 +55,11 @@ __global__ void exclusive_scan_block(int* input_array)
 
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
+
+	int size = input_size*sizeof(int);
+	int* d_A;
+	cudaMalloc(&d_A, size);
+	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
     exclusive_scan_block<<<1, input_size>>>(input_array);
     cudaDeviceSynchronize();
     return;
@@ -96,7 +101,7 @@ bool exclusive_scan_additionTest()
 int main()
 {
 	if(exclusive_scan_additionTest()){
-		printf("exclusive_scan_additionTest() failed");
+		printf("exclusive_scan_additionTest() failed\n");
 		return 0;
 	}
 	initialize_A();
