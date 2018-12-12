@@ -40,8 +40,7 @@ __device__ int exclusive_scan_warp(int* input_array)
 
 __global__ void exclusive_scan_block(int* input_array)
 {
-	int tid = threadIdx.x + threadIdx.y;
-	printf("%d %d %d\n", threadIdx.x, threadIdx.y, tid);
+	int tid = threadIdx.x;
 	int lane = tid & 31;
 	int wid = tid >> 5;
 
@@ -59,20 +58,25 @@ __global__ void exclusive_scan_block(int* input_array)
 
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
-	int size_root = int(sqrt(input_size));
 	int size = input_size*sizeof(int);
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
 	if(input_size < 10) {
-	   exclusive_scan_block<<<1, input_size>>>(d_A);
+	    exclusive_scan_block<<<1, input_size>>>(d_A);
+		cudaDeviceSynchronize();
+        cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
+		cudaFree(d_A);
+		return;
 		// test case
 	}
-    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
-    cudaDeviceSynchronize();
-    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
-	cudaFree(d_A);
-    return;
+	else{
+	    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
+	    cudaDeviceSynchronize();
+	    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
+		cudaFree(d_A);
+	    return;
+	}
 }
 
 void find_repeats(int* input_array, int input_size)

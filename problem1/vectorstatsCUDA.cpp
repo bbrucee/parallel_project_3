@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 100000000
+#define N 200000000
 
 int num_threads = 1024;
 int num_blocks = 0;
@@ -46,7 +46,7 @@ extern double find_max(double* input_array, long int input_size)
 {
 
 
-	int size = input_size*sizeof(double);
+	long int size = input_size*sizeof(double);
 	double* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
@@ -259,6 +259,7 @@ void set_blocks(long int input_size)
 	while(num_threads*num_blocks < input_size){
 		num_blocks++;
 	}
+	printf("%d \n", num_blocks)
 }
 
 int main()
