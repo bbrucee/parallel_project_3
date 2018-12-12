@@ -108,6 +108,6 @@ int main()
 	}
 	initialize_A();
 	exclusive_scan_addition(A_copy, A_size);
-	printf("It ran and possible worked\n")
+	printf("It ran and possible worked\n");
 	return 0;
 }
