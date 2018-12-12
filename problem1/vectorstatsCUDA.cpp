@@ -202,16 +202,19 @@ extern double find_std(double* input_array, int input_size)
  	find_squaresumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_C, input_size);
     cudaDeviceSynchronize();
     cudaMemcpy(squaresum_value, d_C, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
-    mean_value[0] = mean_value[0]/input_size;
-    squaresum_value[0] = squaresum_value[0]/input_size;
+    
 
     cudaFree(d_A);
  	cudaFree(d_B);
   	cudaFree(d_C);
+  	
   	for(int i=1; i<num_blocks;i++){
   		mean_value[0] += mean_value[i];
   		squaresum_value[0] += squaresum_value[i];
   	}
+
+  	mean_value[0] = mean_value[0]/input_size;
+    squaresum_value[0] = squaresum_value[0]/input_size;
 
     return sqrt(squaresum_value[0] - mean_value[0]*mean_value[0]);
 }
