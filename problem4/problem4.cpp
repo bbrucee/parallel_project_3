@@ -10,6 +10,9 @@ int A_size = 1000000;
 int A[1000000];
 int A_copy[1000000];
 
+int num_threads = 1000;
+int num_blocks = 0;
+
 
 void initialize_A()
 {
@@ -61,7 +64,11 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-    exclusive_scan_block<<<1, dim3(size_root, size_root)>>>(d_A);
+	if(input_size < 10) {
+	   exclusive_scan_block<<<1, input_size>>>(d_A);
+		// test case
+	}
+    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
     cudaDeviceSynchronize();
     cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
 	cudaFree(d_A);
@@ -96,18 +103,23 @@ bool exclusive_scan_additionTest()
 	exclusive_scan_addition(test_array, 5);
 	for(int i = 0; i < 5; i++){
 		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
-		// if(test_array[i] - expected_output[i] != 0) return true;
+		if(test_array[i] - expected_output[i] != 0) return true;
 	}
 	return false;
 }
 
+void set_blocks(long int input_size)
+{
+	while(num_threads*num_blocks < input_size){
+		num_blocks++;
+	}
+}
+
 int main()
 {
-	// if(exclusive_scan_additionTest()){
-	// 	printf("exclusive_scan_additionTest() failed\n");
-	// 	return 0;
-	// }
+	exclusive_scan_additionTest()
 	initialize_A();
+	set_blocks(A_size);
 	exclusive_scan_addition(A_copy, A_size);
 	printf("It ran and possibly worked\n");
 	// for(int i = 0; i < A_size; i ++){
