@@ -77,7 +77,7 @@ __global__ void find_minKernel(double* input_array, double* array_min, long int 
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
    		if(index < blockDim.x){
-   			if((minimum[index] > minimum[index+s]) && ((index+s) < input_size)){
+   			if((minimum[index] > minimum[index+s])){
    				minimum[index] = minimum[index+s];
    			}
    		}
@@ -120,7 +120,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum, long int in
 
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
-   		if(index < blockDim.x){
+   		if(index < blockDim.x  && ((index+s) < input_size)){
 			array_sum[index] += array_sum[index+s];
    		}
    		__syncthreads();
