@@ -462,7 +462,7 @@ int main()
 	set_blocks(N);
 	vectorstatsCUDAtest2();
   vectorstatsResultsCompared();
-  vectorstatsTiming();
-  GPUmemorytransferTiming(test_array, N);
+  // vectorstatsTiming();
+  // GPUmemorytransferTiming(test_array, N);
 	return 0;
 }
