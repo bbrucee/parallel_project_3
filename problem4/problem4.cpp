@@ -21,7 +21,7 @@ void initialize_A()
 	return;
 }
 
-__global__ int exclusive_scan_warp(int* input_array)
+__device__ int exclusive_scan_warp(int* input_array)
 {
 	int tid = threadIdx.x;
 	int lane = tid & 31;
@@ -41,11 +41,11 @@ __global__ void exclusive_scan_block(int* input_array)
 	int lane = tid & 31;
 	int wid = tid >> 5;
 
-	int value = exclusive_scan_warp(input_array, tid);
+	int value = exclusive_scan_warp(input_array);
 
 	if(lane == 31) input_array[wid] = input_array[tid];
 	__syncthreads();
-	if(wid == 0) exclusive_scan_warp(input_array, tid);
+	if(wid == 0) exclusive_scan_warp(input_array);
 	__syncthreads();
 	if(wid > 0) value = input_array[wid-1] + value;
 	__syncthreads();
@@ -60,7 +60,7 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
     return;
 }
 
-void find_repeats(int* input_array, input_size)
+void find_repeats(int* input_array, int input_size)
 {
 	vector<int> B, C;
 	for(int i = 0; i < input_size-1; i++){
