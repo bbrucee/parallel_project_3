@@ -5,7 +5,7 @@
 
 #define N 200000000
 
-int num_threads = 512;
+int num_threads = 1024;
 int num_blocks = 0;
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
