@@ -37,7 +37,7 @@ __device__ int exclusive_scan_warp(int* input_array)
 
 __global__ void exclusive_scan_block(int* input_array)
 {
-	int tid = threadIdx.x;
+	int tid = threadIdx.x + threadIdx.y;
 	int lane = tid & 31;
 	int wid = tid >> 5;
 
@@ -60,7 +60,7 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-    exclusive_scan_block<<<1, input_size>>>(d_A);
+    exclusive_scan_block<<<1, dim(1000, 1000)>>>(d_A);
     cudaDeviceSynchronize();
     cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
 	cudaFree(d_A);
