@@ -20,7 +20,7 @@ double test_array[N];
 // This is in general a reduction and a similar pseduocode is used for mean/min/std calculations
 
 
-__global__ void find_maxKernel(double* input_array, double* array_max, int input_size)
+__global__ void find_maxKernel(double* input_array, double* array_max, long int input_size)
 {
 	extern __shared__ double maximum[];
 	// Each thread loads one element from global to shared mem
@@ -42,7 +42,7 @@ __global__ void find_maxKernel(double* input_array, double* array_max, int input
 	if (tid==0) array_max[blockIdx.x] = maximum[0];
 }
 
-extern double find_max(double* input_array, int input_size)
+extern double find_max(double* input_array, long int input_size)
 {
 
 
@@ -66,7 +66,7 @@ extern double find_max(double* input_array, int input_size)
     return max_value[0];
 }
 
-__global__ void find_minKernel(double* input_array, double* array_min, int input_size)
+__global__ void find_minKernel(double* input_array, double* array_min, long int input_size)
 {
 	extern __shared__ double minimum[];
 
@@ -88,7 +88,7 @@ __global__ void find_minKernel(double* input_array, double* array_min, int input
 	if (tid==0) array_min[blockIdx.x] = minimum[0];
 }
 
-extern double find_min(double* input_array, int input_size)
+extern double find_min(double* input_array, long int input_size)
 {
 	int size = input_size*sizeof(double);
 	double* d_A;
@@ -110,7 +110,7 @@ extern double find_min(double* input_array, int input_size)
     return min_value[0];
 }
 
-__global__ void find_sumKernel(double* input_array, double* out_sum, int input_size)
+__global__ void find_sumKernel(double* input_array, double* out_sum, long int input_size)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -131,7 +131,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum, int input_s
 	if (tid==0) out_sum[blockIdx.x] = array_sum[0];
 }
 
-extern double find_mean(double* input_array, int input_size)
+extern double find_mean(double* input_array, long int input_size)
 {
 	int size = input_size*sizeof(double);
 	double* d_A;
@@ -158,7 +158,7 @@ extern double find_mean(double* input_array, int input_size)
 }
 
 
-__global__ void find_squaresumKernel(double* input_array, double* out_sum, int input_size)
+__global__ void find_squaresumKernel(double* input_array, double* out_sum, long int input_size)
 {
 	extern __shared__ double array_sum[];
 	// Each thread loads one element from global to shared mem
@@ -180,7 +180,7 @@ __global__ void find_squaresumKernel(double* input_array, double* out_sum, int i
 }
 
 
-extern double find_std(double* input_array, int input_size)
+extern double find_std(double* input_array, long int input_size)
 {
 	int size = input_size*sizeof(double);
 	double* d_A;
@@ -254,7 +254,7 @@ int vectorstatsCUDAtest2()
     return 0; 
 }
 
-void set_blocks(int input_size)
+void set_blocks(long long int input_size)
 {
 	while(num_threads*num_blocks < input_size){
 		num_blocks++;
