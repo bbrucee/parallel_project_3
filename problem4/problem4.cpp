@@ -38,7 +38,7 @@ __device__ int exclusive_scan_warp(int* input_array)
 __global__ void exclusive_scan_block(int* input_array)
 {
 	int tid = threadIdx.x + threadIdx.y;
-	printf("%d\n", tid);
+	// printf("%d\n", tid);
 	int lane = tid & 31;
 	int wid = tid >> 5;
 
@@ -57,6 +57,7 @@ __global__ void exclusive_scan_block(int* input_array)
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
 	int size_root = int(sqrt(input_size));
+	printf("%d\n", size_root);
 	int size = input_size*sizeof(int);
 	int* d_A;
 	cudaMalloc(&d_A, size);
@@ -110,8 +111,8 @@ int main()
 	initialize_A();
 	exclusive_scan_addition(A_copy, A_size);
 	printf("It ran and possibly worked\n");
-	for(int i = 0; i < A_size; i ++){
-		printf("%d \n", A_copy[i]);
-	}
+	// for(int i = 0; i < A_size; i ++){
+	// 	printf("%d \n", A_copy[i]);
+	// }
 	return 0;
 }
