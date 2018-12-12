@@ -38,6 +38,7 @@ __device__ int exclusive_scan_warp(int* input_array)
 __global__ void exclusive_scan_block(int* input_array)
 {
 	int tid = threadIdx.x + threadIdx.y;
+	printf("%d\n", tid);
 	int lane = tid & 31;
 	int wid = tid >> 5;
 
