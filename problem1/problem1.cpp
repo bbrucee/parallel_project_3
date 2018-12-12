@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <limits>
-
-
+#include <time.h>
 
 #define N 200000000
 
@@ -346,6 +345,68 @@ int vectorstatsResultsCompared()
     return 0; 
 }
 
+int vectorstatsTiming()
+{
+  printf("Running vectorstatsTiming,  N is %d \n -------------------------- \n", N);  
+  for(int i = 0; i < N; i++){
+    double random_double = (double)rand() / RAND_MAX;
+      test_array[i] = random_double * (1000);
+  }
+    
+    printf("Running CUDA max\n");
+    clock_t start = clock(), diff;
+    find_max(test_array, N);
+    diff = clock() - start;
+    int milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+    printf("Running CUDA min\n");
+    start = clock(), diff;
+    find_min(test_array, N);  
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+    printf("Running CUDA mean\n");
+    start = clock(), diff;
+    find_mean(test_array, N);  
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;  
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);  
+    printf("Running CUDA std\n");
+    start = clock(), diff;
+    find_std(test_array, N);
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+    printf("Running CPU max\n");
+    start = clock(), diff;
+    find_maxCPU(test_array, N);
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+    printf("Running CPU min\n");
+    start = clock(), diff;
+    find_minCPU(test_array, N);
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);    
+    printf("Running CPU mean\n");
+    start = clock(), diff;
+    find_meanCPU(test_array, N);
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);    
+    printf("Running CPU std\n");
+    start = clock(), diff;
+    find_stdCPU(test_array, N);
+    diff = clock() - start;
+    milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+    printf("Time taken: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
+    printf(" -------------------------- \n");
+
+    return 0; 
+}
+
+
 void set_blocks(long int input_size)
 {
 	while(num_threads*num_blocks < input_size){
@@ -361,5 +422,6 @@ int main()
 	set_blocks(N);
 	vectorstatsCUDAtest2();
   vectorstatsResultsCompared();
+  vectorstatsTiming();
 	return 0;
 }
