@@ -6,9 +6,9 @@
 
 using namespace std;
 
-int A_size = 1000;
-int A[1000];
-int A_copy[1000];
+int A_size = 1000000;
+int A[1000000];
+int A_copy[1000000];
 
 
 void initialize_A()
