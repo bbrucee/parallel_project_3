@@ -21,7 +21,7 @@ void initialize_A()
 	return;
 }
 
-__global__ void exclusive_scan_warp(int* input_array)
+__global__ int exclusive_scan_warp(int* input_array)
 {
 	int tid = threadIdx.x;
 	int lane = tid & 31;
@@ -35,7 +35,7 @@ __global__ void exclusive_scan_warp(int* input_array)
 	return (lane > 0) ? input_array[tid-1] : 0;
 }
 
-__global void exclusive_scan_block(int* input_array)
+__global__ void exclusive_scan_block(int* input_array)
 {
 	int tid = threadIdx.x;
 	int lane = tid & 31;
