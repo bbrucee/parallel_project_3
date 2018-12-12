@@ -97,7 +97,7 @@ extern double find_min(double* input_array, long int input_size)
 	cudaMalloc(&d_B, num_blocks*sizeof(double));
 
 	double min_value[num_blocks] = {0};
-    find_minKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
+    find_minKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, num_threads);
 	cudaDeviceSynchronize();
 
     cudaMemcpy(min_value, d_B, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
