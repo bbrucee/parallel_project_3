@@ -12,14 +12,15 @@
 #include <pthread.h>
 #include <unistd.h>
 
-char map(int convert);
-void* crack(void* args);
-struct params {
-        size_t password;
-        int passLen;
-        int totalThreads;
-        int currThread;
-};
+using namespace std;
+
+char map(int convert){
+  if (convert < 10) {
+    return (char) convert + 48;
+  } else {
+    return (char) convert + 87;
+  }
+}
 
 //Set size is 36 characters and one blank character
 float setSize = 36;
@@ -30,8 +31,9 @@ int main() {
 
     int possibleLen = strlen(passwordStr);
 
-    std::hash<std::string> ptr_hash;
-    std::size_t password = ptr_hash(std::string(passwordStr));
+    hash<string> ptr_hash;
+    size_t password = ptr_hash(string(passwordStr));
+    printf("%d\n", password);
 
     int numThreads = 4;
 
@@ -92,7 +94,7 @@ int main() {
 
     */
 
-    
+    /*
     // Use Pthreads
 
     printf("-Starting Parallel PThread Cracker-\n");
@@ -124,10 +126,11 @@ int main() {
     elapsed = (finish.tv_sec - start.tv_sec);
     elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
     printf("Time: %f\n", elapsed);
-    
+    */
     return 0;
 }
 
+/*
 void* crack(void* args){
   // Get arguments
   struct params *params = (struct params*) args;
@@ -174,12 +177,4 @@ void* crack(void* args){
   //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
   return NULL;
 }
-
-
-char map(int convert){
-  if (convert < 10) {
-    return (char) convert + 48;
-  } else {
-    return (char) convert + 87;
-  }
-}
+*/

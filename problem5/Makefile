@@ -1,5 +1,5 @@
 CC=nvcc
-CFLAGS=-x cu
+CFLAGS=-std=c++11 -x cu
 HEADER=include/password_crack.h
 
 default: crack
