@@ -117,7 +117,7 @@ void set_blocks(long int input_size)
 
 int main()
 {
-	exclusive_scan_additionTest()
+	exclusive_scan_additionTest();
 	initialize_A();
 	set_blocks(A_size);
 	exclusive_scan_addition(A_copy, A_size);
