@@ -6,7 +6,7 @@
 #define N 200000000
 
 int num_threads = 1000;
-int num_blocks = 0;
+int num_blocks = 1;
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
