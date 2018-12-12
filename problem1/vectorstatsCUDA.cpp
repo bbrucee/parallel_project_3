@@ -259,7 +259,7 @@ void set_blocks(long int input_size)
 	while(num_threads*num_blocks < input_size){
 		num_blocks++;
 	}
-	printf("%d \n", num_blocks)
+	printf("%d \n", num_blocks);
 }
 
 int main()
