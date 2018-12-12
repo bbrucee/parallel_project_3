@@ -275,7 +275,7 @@ int vectorstatsCPUtest()
     // Test function compares our function outputs to values computed using numpy externally
     double array[8] = {1.2342, 2.232421, 1.214124, 4.3252, 5.12314, 2.343241, 6.123123, 12.23123};
     int size = 8;
-    printf("Running vectorstatsCPUtest(), N is %d \n -------------------------- \n", N);  
+    printf("Running vectorstatsCPUtest()\n -------------------------- \n", N);  
     printf("Homebrew min is %f\n", find_minCPU(array, size));
     printf("Homebrew max is %f\n", find_maxCPU(array, size));
     printf("Homebrew mean is %f\n", find_meanCPU(array, size));
@@ -320,6 +320,26 @@ int vectorstatsCUDAtest2()
     printf("Homebrew min is %f\n", find_min(test_array, N));
     printf("Homebrew mean is %f\n", find_mean(test_array, N));
     printf("Homebrew std is %f\n", find_std(test_array, N));
+    printf(" -------------------------- \n");
+
+    return 0; 
+}
+
+int vectorstatsResultsCompared()
+{
+  printf("Running vectorstatsCUDAtest2(), N is %d \n -------------------------- \n", N);  
+  for(int i = 0; i < N; i++){
+    double random_double = (double)rand() / RAND_MAX;
+      test_array[i] = random_double * (1000);
+  }
+    printf("CUDA max is %f\n", find_max(test_array, N));
+    printf("CUDA min is %f\n", find_min(test_array, N));
+    printf("CUDA mean is %f\n", find_mean(test_array, N));
+    printf("CUDA std is %f\n", find_std(test_array, N));
+    printf("CPU max is %f\n", find_maxCPU(test_array, N));
+    printf("CPU min is %f\n", find_minCPU(test_array, N));
+    printf("CPU mean is %f\n", find_meanCPU(test_array, N));
+    printf("CPU std is %f\n", find_stdCPU(test_array, N));
     printf(" -------------------------- \n");
 
     return 0; 
