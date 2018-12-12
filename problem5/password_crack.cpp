@@ -22,6 +22,14 @@ char map(int convert){
   }
 }
 
+void* crack(void* args);
+struct params {
+        size_t password;
+        int passLen;
+        int totalThreads;
+        int currThread;
+};
+
 //Set size is 36 characters and one blank character
 float setSize = 36;
 bool done = false;
@@ -131,6 +139,7 @@ int main() {
 }
 
 /*
+
 void* crack(void* args){
   // Get arguments
   struct params *params = (struct params*) args;
@@ -178,3 +187,4 @@ void* crack(void* args){
   return NULL;
 }
 */
+
