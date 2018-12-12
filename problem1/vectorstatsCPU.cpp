@@ -1,13 +1,13 @@
-#include<stdio.h>
-#include<math.h>
+#include <stdio.h>
+#include <math.h>
 #include <limits>
 
 
-double find_max(double* input_array, int input_size)
+double find_maxCPU(double* input_array, int input_size)
 {
     if(input_size == 0)
         return 0;
-    double max_value = std::numeric_limits<double>::min();
+    double max_value =  std::numeric_limits<double>::min();
     for(int i = 0; i<input_size; i++){
         if(input_array[i] > max_value)
             max_value = input_array[i];
@@ -15,7 +15,7 @@ double find_max(double* input_array, int input_size)
     return max_value;
 }
     
-double find_min(double* input_array, int input_size)
+double find_minCPU(double* input_array, int input_size)
 {
     if(input_size == 0)
         return 0;
@@ -28,7 +28,7 @@ double find_min(double* input_array, int input_size)
 
 }
 
-double find_mean(double* input_array, int input_size)
+double find_meanCPU(double* input_array, int input_size)
 {
     if(input_size == 0)
         return 0;
@@ -40,7 +40,7 @@ double find_mean(double* input_array, int input_size)
     return mean_value;
 }
     
-double find_std(double* input_array, int input_size)
+double find_stdCPU(double* input_array, int input_size)
 {
     if(input_size == 0)
         return 0;
