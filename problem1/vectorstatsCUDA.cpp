@@ -5,8 +5,8 @@
 
 #define N 2048
 
-int num_blocks = N/4;
 int num_threads = 512;
+int num_blocks = 0;
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
@@ -209,7 +209,6 @@ extern double find_std(double* input_array, int input_size)
 }
 
 
-
 int vectorstatsCUDAtest1()
 {
 	printf("Running vectorstatsCUDAtest1() \n -------------------------- \n");
@@ -255,9 +254,18 @@ int vectorstatsCUDAtest2()
     return 0; 
 }
 
+int set_blocks(int input_size)
+{
+	while(num_threads*num_blocks < int input_size){
+		num_blocks++;
+	}
+}
+
 int main()
 {
+	set_blocks(8);
 	vectorstatsCUDAtest1();
+	set_blocks(N);
 	vectorstatsCUDAtest2();
 	return 0;
 }
