@@ -5,7 +5,7 @@
 
 #define N 200000000
 
-int num_threads = 1024;
+int num_threads = 1000;
 int num_blocks = 0;
 
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
@@ -44,7 +44,6 @@ __global__ void find_maxKernel(double* input_array, double* array_max, long int 
 
 extern double find_max(double* input_array, long int input_size)
 {
-
 
 	long int size = input_size*sizeof(double);
 	double* d_A;
@@ -267,7 +266,5 @@ int main()
 	vectorstatsCUDAtest1();
 	set_blocks(N);
 	vectorstatsCUDAtest2();
-	cudaError_t error = cudaGetLastError();
-	if(error != cudaSuccess) printf("CUDA error: %s\n", cudaGetErrorString(error));
 	return 0;
 }
