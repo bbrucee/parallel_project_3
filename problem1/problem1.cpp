@@ -59,10 +59,10 @@ extern double find_max(double* input_array, long int input_size)
 
     cudaMemcpy(max_value, d_B, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
 
-	cudaFree(d_A);
+	  cudaFree(d_A);
   	cudaFree(d_B);
 
-    return max_value[0];
+    return find_maxCPU(max_value, num_blocks);
 }
 
 __global__ void find_minKernel(double* input_array, double* array_min, int input_size, int num_threads)
@@ -106,7 +106,7 @@ extern double find_min(double* input_array, long int input_size)
     cudaFree(d_A);
   	cudaFree(d_B);
 
-    return min_value[0];
+    return find_minCPU(min_value, num_blocks);
 }
 
 __global__ void find_sumKernel(double* input_array, double* out_sum, long int input_size)
