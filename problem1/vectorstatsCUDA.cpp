@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-#define N 1000000
+#define N 10000000
 
 int num_threads = 512;
 int num_blocks = 0;
@@ -235,18 +235,8 @@ int vectorstatsCUDAtest2()
     	test_array[i] = random_double * (1000);
 	}
     printf("Homebrew max is %f\n", find_max(test_array, N));
-    cudaError_t error = cudaGetLastError();
-	if(error != cudaSuccess)
-	{
-	// print the CUDA error message and exit
 	printf("CUDA error: %s\n", cudaGetErrorString(error));
-	}	
     printf("Homebrew min is %f\n", find_min(test_array, N));
-    if(error != cudaSuccess)
-	{
-	// print the CUDA error message and exit
-	printf("CUDA error: %s\n", cudaGetErrorString(error));
-	}	
     printf("Homebrew mean is %f\n", find_mean(test_array, N));
     printf("Homebrew std is %f\n", find_std(test_array, N));
     printf(" -------------------------- \n");
