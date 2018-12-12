@@ -120,7 +120,7 @@ __global__ void find_sumKernel(double* input_array, double* out_sum, long int in
 
    	for(int s=1; s<blockDim.x; s*=2){
    		int index = 2*s*tid;
-   		if(index < blockDim.x  && ((index+s) < input_size)){
+   		if(index < blockDim.x){
 			array_sum[index] += array_sum[index+s];
    		}
    		__syncthreads();
