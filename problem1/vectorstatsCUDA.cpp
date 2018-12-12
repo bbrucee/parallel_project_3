@@ -254,7 +254,7 @@ int vectorstatsCUDAtest2()
     return 0; 
 }
 
-void set_blocks(long long int input_size)
+void set_blocks(long int input_size)
 {
 	while(num_threads*num_blocks < input_size){
 		num_blocks++;
