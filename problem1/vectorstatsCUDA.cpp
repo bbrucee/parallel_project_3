@@ -5,6 +5,9 @@
 
 #define N 2048
 
+int num_blocks = N/4;
+int num_threads = 512;
+
 // https://developer.download.nvidia.com/books/cuda-by-example/cuda-by-example-sample.pdf
 double test_array[N];
 
@@ -52,7 +55,7 @@ extern double find_max(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double max_value[1] = {0};
-    find_maxKernel<<<4, 256, 256*sizeof(double)>>>(d_A, d_B, input_size);
+    find_maxKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(max_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -96,7 +99,7 @@ extern double find_min(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double min_value[1] = {0};
-    find_minKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
+    find_minKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
 	cudaDeviceSynchronize();
 
     cudaMemcpy(min_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -139,7 +142,7 @@ extern double find_mean(double* input_array, int input_size)
 	cudaMalloc(&d_B, 1*sizeof(double));
 
 	double mean_value[1] = {0};
-    find_sumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
+    find_sumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
 
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
@@ -189,10 +192,10 @@ extern double find_std(double* input_array, int input_size)
 
 	double mean_value[1] = {0};
 	double squaresum_value[1] = {0};
-    find_sumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_B, input_size);
+    find_sumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
     cudaDeviceSynchronize();
     cudaMemcpy(mean_value, d_B, 1*sizeof(double), cudaMemcpyDeviceToHost);
- 	find_squaresumKernel<<<1, input_size, 256*sizeof(double)>>>(d_A, d_C, input_size);
+ 	find_squaresumKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_C, input_size);
     cudaDeviceSynchronize();
     cudaMemcpy(squaresum_value, d_C, 1*sizeof(double), cudaMemcpyDeviceToHost);
     mean_value[0] = mean_value[0]/input_size;
