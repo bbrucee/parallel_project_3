@@ -440,7 +440,7 @@ extern void GPUmemorytransferTiming(double* input_array, long int input_size)
   cudaFree(d_B);
   cudaFree(d_C);
   diff = clock() - start;
-  int milli_sec = diff * 1000 / CLOCKS_PER_SEC;
+  milli_sec = diff * 1000 / CLOCKS_PER_SEC;
   printf("Time taken to transfer the two output arrays of size N and free CUDA memory: %d seconds %d milliseconds\n", milli_sec/1000, milli_sec%1000);
 
   printf(" -------------------------- \n");
