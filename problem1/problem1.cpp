@@ -456,12 +456,12 @@ void set_blocks(long int input_size)
 
 int main()
 {
- //  vectorstatsCPUtest();
-	// set_blocks(8);
-	// vectorstatsCUDAtest1();
-	// set_blocks(N);
-	// vectorstatsCUDAtest2();
- //  vectorstatsResultsCompared();
+  vectorstatsCPUtest();
+	set_blocks(8);
+	vectorstatsCUDAtest1();
+	set_blocks(N);
+	vectorstatsCUDAtest2();
+  vectorstatsResultsCompared();
   vectorstatsTiming();
   GPUmemorytransferTiming(test_array, N);
 	return 0;
