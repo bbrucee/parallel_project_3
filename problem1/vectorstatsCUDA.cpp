@@ -150,6 +150,9 @@ extern double find_mean(double* input_array, int input_size)
     cudaFree(d_A);
   	cudaFree(d_B);
 
+  	for(int i=1; i<num_blocks;i++){
+  		mean_value[0] += mean_value[i];
+  	}
 
     return mean_value[0]/input_size;
 }
@@ -205,6 +208,10 @@ extern double find_std(double* input_array, int input_size)
     cudaFree(d_A);
  	cudaFree(d_B);
   	cudaFree(d_C);
+  	for(int i=1; i<num_blocks;i++){
+  		mean_value[0] += mean_value[i];
+  		squaresum_value[0] += squaresum_value[i];
+  	}
 
     return sqrt(squaresum_value[0] - mean_value[0]*mean_value[0]);
 }
