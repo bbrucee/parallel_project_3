@@ -138,7 +138,7 @@ int main() {
     return 0;
 }
 
-/*
+
 
 void* crack(void* args){
   // Get arguments
@@ -186,5 +186,43 @@ void* crack(void* args){
   //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
   return NULL;
 }
-*/
+
+
+__global__ void cuda_crack(size_t password, int possLen) {
+//printf("Values: %d\t %s\n", currLen, password);
+  for(int currLen = 1; currLen <= possLen; ++currLen) {
+    char* guess = new char[currLen+1];
+    memset(guess, '\0', currLen+1);
+
+    int partitionOfPass = pow(setSize, (float) currLen) / totalThreads;
+    int passStart = currThread * partitionOfPass;
+
+    //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
+
+    for (int currChar = passStart; currChar <= passStart + partitionOfPass; ++currChar) {
+      if (done == true) {
+        break;
+      }
+      count++;
+
+      // Set guess
+      for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
+        char temp = map((currChar / (int) pow(setSize, guessIndex)) % (int) setSize);
+        guess[guessIndex] = temp;
+      }
+      //printf("Iteration: %d\tGuess: %s\n", currChar, guess);
+
+      // Check if it compares
+      if (password == ptr_hash(std::string(guess))) {
+
+        printf("Match Found Parallel!! \nLen: %d\tGuess: %s\t Iterations: %d\t Current Count: %d\n",currLen, guess, count, currChar);
+        done = true;
+        return (void*) guess;
+      }
+    }
+  }
+  //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
+  return NULL;
+
+}
 
