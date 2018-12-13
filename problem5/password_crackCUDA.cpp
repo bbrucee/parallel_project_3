@@ -77,6 +77,13 @@ int RSHash1(char str[], size_t s)
 
     return (hash & 0x7FFFFFFF);
  }
+char map1(int convert){
+  if (convert < 10) {
+    return (char) convert + 48;
+  } else {
+    return (char) convert + 87;
+  }
+}
 
 char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
   if(!*found) {
@@ -89,13 +96,13 @@ char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found,
 
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
-      char temp = map((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
+      char temp = map1((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
       guess[guessIndex] = temp;
     }
     //printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
-    if (*password == RSHash(guess, *possibleLen)) {
+    if (*password == RSHash1(guess, *possibleLen)) {
 
       printf("Match Found Parallel!! Guess: %s\t ", guess);
       *found = true;
