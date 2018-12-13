@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include <numeric>
 
 using namespace std;
 
@@ -91,7 +92,7 @@ void find_repeats(int* input_array, int input_size)
 	}	
 }
 
-bool exclusive_scan_additionTest()
+void exclusive_scan_additionTest1()
 {
 	int test_array[5], expected_output[5];
 	test_array[0] = 1;
@@ -107,9 +108,7 @@ bool exclusive_scan_additionTest()
 	exclusive_scan_addition(test_array, 5);
 	for(int i = 0; i < 5; i++){
 		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
-		if(test_array[i] - expected_output[i] != 0) return true;
 	}
-	return false;
 }
 
 void set_blocks(long int input_size)
@@ -119,15 +118,24 @@ void set_blocks(long int input_size)
 	}
 }
 
-int main()
+void exclusive_scan_additionTest2()
 {
-	exclusive_scan_additionTest();
 	initialize_A();
 	set_blocks(A_size);
-	exclusive_scan_addition(A_copy, A_size);
-	printf("It ran and possibly worked\n");
-	// for(int i = 0; i < A_size; i ++){
-	// 	printf("%d \n", A_copy[i]);
-	// }
+	exclusive_scan_addition(A, A_size);
+	for (int j=0; j<=A_size-1; j++) {
+	    if (j > 0)
+	        A_copy[j] = A_copy[j] + A_copy[j-1];
+	}
+	A_copy[0] = 0;
+	for(int i = 0; i < 5; i++){
+		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
+	}
+}
+
+int main()
+{
+	exclusive_scan_additionTest1();
+	exclusive_scan_additionTest2();
 	return 0;
 }
