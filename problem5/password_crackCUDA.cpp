@@ -39,6 +39,7 @@ __device__ int RSHash(char str[], size_t s)
     return (hash & 0x7FFFFFFF);
  }
 
+char* glob_guess = new char[5];
 __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
   if(!*found) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -52,14 +53,13 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       char temp = map((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
-      guess[guessIndex] = temp;
+      guess1[guessIndex] = temp;
     }
     //printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
     if (*password == RSHash(guess, *possibleLen)) {
-      memcpy(guess, guess1, sizeof(char)*currLen);
-      printf("Match Found Parallel!! Guess: %s\t ", guess);
+      memcpy(glob_guess, guess1, sizeof(char)*currLen);
       *found = true;
     }
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
@@ -156,7 +156,7 @@ int main() {
 
     cudaDeviceSynchronize();
 
-    printf("Password: %s\n", guess);
+    printf("Password: %s\n", glob_guess);
 
     cudaFree(password);
     cudaFree(setSize);
