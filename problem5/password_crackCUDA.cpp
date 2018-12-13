@@ -89,18 +89,19 @@ char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found,
   if(!*found) {
     //int index = blockIdx.x * blockDim.x + threadIdx.x;
     int index = 1;
-    //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(log(index) / log(*setSize));
+    printf("Values: %d\t %s\n", currLen, password);
+
     memset(guess, '\0', *possibleLen);
 
-    //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
+    printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
 
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       char temp = map1((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
       guess[guessIndex] = temp;
     }
-    //printf("Iteration: %d\tGuess: %s\n", index, guess);
+    printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
     if (*password == RSHash1(guess, *possibleLen)) {
@@ -109,7 +110,6 @@ char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found,
       *found = true;
     }
 
-    //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
   }
     return guess;
 
