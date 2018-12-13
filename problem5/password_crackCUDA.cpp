@@ -22,15 +22,13 @@ char map(int convert){
   }
 }
 
-__global__ void cuda_crack(size_t password, int possLen, int setSize, bool found, char guess[]) {
+__global__ void cuda_crack(size_t password, int possibleLen, int setSize, bool found, char guess[]) {
   if(!found) {
+    hash<string> ptr_hash;
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(log(index) / log(setSize));
     memset(guess, '\0', possibleLen);
-
-    int partitionOfPass = pow(setSize, (float) currLen) / totalThreads;
-    int passStart = currThread * partitionOfPass;
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
 
@@ -44,7 +42,7 @@ __global__ void cuda_crack(size_t password, int possLen, int setSize, bool found
     // Check if it compares
     if (password == ptr_hash(std::string(guess))) {
 
-      printf("Match Found Parallel!! \nLen: %d\tGuess: %s\t Iterations: %d\t Current Count: %d\n",currLen, guess, count, currChar);
+      printf("Match Found Parallel!! Guess: %s\t ", guess);
       found = true;
     }
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
@@ -77,7 +75,7 @@ int main() {
 
     int permutations = 0;
     for (int i = 1; i <= possibleLen; i++) {
-      permutations += pow(setSize, i);
+      permutations += pow(*setSize, i);
     }
 
     int threadsPerBlock = 256;
