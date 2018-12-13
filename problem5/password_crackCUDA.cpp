@@ -22,59 +22,6 @@ char map(int convert){
   }
 }
 
-void* crack(void* args);
-struct params {
-        size_t password;
-        int passLen;
-        int totalThreads;
-        int currThread;
-};
-
-//Set size is 36 characters and one blank character
-int main() {
-
-    size_t *password;
-    int *setSize, *possibleLen;
-    bool *found;
-    char *guess;
-
-    cudaMallocManaged(&password, sizeof(size_t));
-    cudaMallocManaged(&setSize, sizeof(int));
-    cudaMallocManaged(&possibleLen, sizeof(int));
-    cudaMallocManaged(&found, sizeof(bool));
-
-    char passwordStr[] = "aabca";
-    hash<string> ptr_hash;
-
-    password = ptr_hash(string(passwordStr));
-    setSize = 36;
-    possibleLen = strlen(passwordStr);
-    found = false;
-
-    cudaMallocManaged(&guess, sizeof(char) * possibleLen);
-
-    int permutations = 0;
-    for (int i = 1; i <= possibleLen; i++) {
-      permutations += pow(setSize, i);
-    }
-
-    threadsPerBlock = 256;
-    numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
-
-    cuda_crack<<threadsPerBlock, numBlocks>>(password, possibleLen, setSize, found, guess);
-
-    cudaDeviceSynchronize();
-
-    printf("Password: %s\n", guess);
-
-    cudaFree(password);
-    cudaFree(setSize);
-    cudaFree(possibleLen);
-    cudaFree(found);
-
-    return 0;
-}
-
 __global__ void cuda_crack(size_t password, int possLen, int setSize, bool found, char guess[]) {
   if(!found) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -102,5 +49,51 @@ __global__ void cuda_crack(size_t password, int possLen, int setSize, bool found
     }
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
   }
+}
+
+
+//Set size is 36 characters and one blank character
+int main() {
+
+    size_t *password;
+    int *setSize, *possibleLen;
+    bool *found;
+    char *guess;
+
+    cudaMallocManaged(&password, sizeof(size_t));
+    cudaMallocManaged(&setSize, sizeof(int));
+    cudaMallocManaged(&possibleLen, sizeof(int));
+    cudaMallocManaged(&found, sizeof(bool));
+
+    char passwordStr[] = "aabca";
+    hash<string> ptr_hash;
+
+    *password = ptr_hash(string(passwordStr));
+    *setSize = 36;
+    *possibleLen = strlen(passwordStr);
+    *found = false;
+
+    cudaMallocManaged(&guess, sizeof(char) * (*possibleLen));
+
+    int permutations = 0;
+    for (int i = 1; i <= possibleLen; i++) {
+      permutations += pow(setSize, i);
+    }
+
+    int threadsPerBlock = 256;
+    int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
+
+    cuda_crack<<threadsPerBlock, numBlocks>>(password, possibleLen, setSize, found, guess);
+
+    cudaDeviceSynchronize();
+
+    printf("Password: %s\n", guess);
+
+    cudaFree(password);
+    cudaFree(setSize);
+    cudaFree(possibleLen);
+    cudaFree(found);
+
+    return 0;
 }
 
