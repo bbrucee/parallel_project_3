@@ -78,7 +78,7 @@ int RSHash1(char str[], size_t s)
     return (hash & 0x7FFFFFFF);
  }
 
-size_t* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
+char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
   if(!*found) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
@@ -103,7 +103,7 @@ size_t* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *foun
 
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
   }
-    return *password;
+    return guess;
 
 }
 
