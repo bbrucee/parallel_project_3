@@ -58,7 +58,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
 
     // Check if it compares
     if (*password == RSHash(guess, *possibleLen)) {
-      guess = guess1;
+      memcpy(guess, guess1, sizeof(char)*currLen);
       printf("Match Found Parallel!! Guess: %s\t ", guess);
       *found = true;
     }
