@@ -57,6 +57,24 @@ __global__ void exclusive_scan_block(int* input_array)
 	input_array[tid] = value;
 }
 
+__global__ void exclusive_scan_block(int* input_array)
+{
+	int tid = threadIdx.x;
+	int lane = tid & 31;
+	int wid = tid >> 5;
+
+	int value = exclusive_scan_warp(input_array);
+
+	if(lane == 31) input_array[wid] = input_array[tid];
+	__syncthreads();
+	if(wid == 0) exclusive_scan_warp(input_array);
+	__syncthreads();
+	if(wid > 0) value = input_array[wid-1] + value;
+	__syncthreads();
+
+	input_array[tid] = value;
+}
+
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
 	int size = input_size*sizeof(int);
@@ -72,7 +90,7 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 		// test case
 	}
 	else{
-	    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
+	    exclusive_scan_blocks<<<num_blocks, num_threads>>>(d_A);
 	    cudaDeviceSynchronize();
 	    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
 		cudaFree(d_A);
@@ -92,8 +110,16 @@ void find_repeats(int* input_array, int input_size)
 	}	
 }
 
+void set_blocks(long int input_size)
+{
+	while(num_threads*num_blocks < input_size){
+		num_blocks++;
+	}
+}
+
 void exclusive_scan_additionTest1()
 {
+	printf("Running exclusive_scan_additionTest1()\n -------------------------- \n");  
 	int test_array[5], expected_output[5];
 	test_array[0] = 1;
 	test_array[1] = 4;
@@ -109,17 +135,12 @@ void exclusive_scan_additionTest1()
 	for(int i = 0; i < 5; i++){
 		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
 	}
-}
-
-void set_blocks(long int input_size)
-{
-	while(num_threads*num_blocks < input_size){
-		num_blocks++;
-	}
+	printf(" -------------------------- \n");
 }
 
 void exclusive_scan_additionTest2()
 {
+	printf("Running exclusive_scan_additionTest2()\n -------------------------- \n");  
 	initialize_A();
 	set_blocks(A_size);
 	exclusive_scan_addition(A, A_size);
@@ -128,9 +149,10 @@ void exclusive_scan_additionTest2()
 	        A_copy[j] = A_copy[j] + A_copy[j-1];
 	}
 	A_copy[0] = 0;
-	for(int i = 0; i < 5; i++){
+	for(int i = 0; i < 20; i++){
 		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
 	}
+	printf(" -------------------------- \n");
 }
 
 int main()
