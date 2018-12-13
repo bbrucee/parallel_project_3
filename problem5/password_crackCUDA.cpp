@@ -22,7 +22,7 @@ char map(int convert){
   }
 }
 
-__global__ void cuda_crack(size_t password, int possibleLen, int setSize, bool found, char guess[]) {
+__global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
   if(!found) {
     hash<string> ptr_hash;
     int index = blockIdx.x * blockDim.x + threadIdx.x;
@@ -74,7 +74,7 @@ int main() {
     cudaMallocManaged(&guess, sizeof(char) * (*possibleLen));
 
     int permutations = 0;
-    for (int i = 1; i <= possibleLen; i++) {
+    for (int i = 1; i <= *possibleLen; i++) {
       permutations += pow(*setSize, i);
     }
 
