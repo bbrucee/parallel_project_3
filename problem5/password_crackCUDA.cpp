@@ -162,6 +162,7 @@ int main() {
     cudaFree(possibleLen);
     cudaFree(found);
     cudaFree(guess);
+    cudaProfilerStop();
 
     return 0;
 }
