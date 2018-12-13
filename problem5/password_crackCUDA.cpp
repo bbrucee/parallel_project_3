@@ -44,7 +44,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(logf(index) / logf(*setSize)) + 1;
-      char* guess1 = guessMatrix + index*sizeof(char)*possibleLen;
+      char* guess1 = guessMatrix + index*sizeof(char)*(*possibleLen);
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
 
