@@ -14,7 +14,7 @@
 
 using namespace std;
 
-char map(int convert){
+__device__ char map(int convert){
   if (convert < 10) {
     return (char) convert + 48;
   } else {
@@ -27,7 +27,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     hash<string> ptr_hash;
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
-    int currLen = (int)(log(index) / log(*setSize));
+    int currLen = (int)(logf(index) / logf(*setSize));
     memset(guess, '\0', *possibleLen);
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
