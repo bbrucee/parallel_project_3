@@ -35,6 +35,13 @@ int main() {
     size_t password = ptr_hash(string(passwordStr));    
     printf("-Starting Non-Parallel Password Cracker-\n");
 
+
+    struct timespec start, finish;
+    double elapsed;
+
+    // Start Timer
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
     // Loop through len 1 - possible len
     for (int currLen = 1; currLen <= possibleLen; ++currLen) {
     // Loop for all possible combinations
@@ -56,6 +63,11 @@ int main() {
         }
       }
     }
-    
+
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    elapsed = (finish.tv_sec - start.tv_sec);
+    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    printf("Time: %f\n", elapsed);
+
     return 0;
 }
