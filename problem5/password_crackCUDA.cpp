@@ -44,21 +44,21 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(logf(index) / logf(*setSize)) + 1;
-      char* guess1 = new char[currLen + 1];
-      memset(guess1, '\0', currLen +1);
+      //char* guess1 = new char[currLen + 1];
+      //memset(guess1, '\0', currLen +1);
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
 
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       char temp = map((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
-      guess1[guessIndex] = temp;
+      guess[guessIndex] = temp;
     }
     //printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
     if (*password == RSHash(guess, *possibleLen)) {
-      memcpy(guess, guess1, sizeof(char)*currLen);
+      //memcpy(guess, guess1, sizeof(char)*currLen);
       *found = true;
     }
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
@@ -162,7 +162,6 @@ int main() {
     cudaFree(possibleLen);
     cudaFree(found);
     cudaFree(guess);
-    cudaProfilerStop();
 
     return 0;
 }
