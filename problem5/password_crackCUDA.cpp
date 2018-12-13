@@ -88,27 +88,28 @@ char map1(int convert){
 char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
   if(!*found) {
     //int index = blockIdx.x * blockDim.x + threadIdx.x;
-    int index = 100;
-    int currLen = (int)(log(index) / log(*setSize)) + 1;
-    printf("Values: %d\t %d\n", currLen, *password);
+    for ( int index = 0; intdex < 99; index ++) {
+      int currLen = (int)(log(index) / log(*setSize)) + 1;
+      printf("Values: %d\t %d\n", currLen, *password);
 
-    memset(guess, '\0', *possibleLen);
+      memset(guess, '\0', *possibleLen);
 
-    // Set guess
-    for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
-      char temp = map1((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
-      guess[guessIndex] = temp;
-      printf("guess in for loop: %s\n", guess);
+      // Set guess
+      for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
+        char temp = map1((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
+        guess[guessIndex] = temp;
+        printf("guess in for loop: %s\n", guess);
+      }
+      printf("Iteration: %d\tGuess: %s\n", index, guess);
+
+      // Check if it compares
+      if (*password == RSHash1(guess, *possibleLen)) {
+
+        printf("Match Found Parallel!! Guess: %s\t ", guess);
+        *found = true;
+      }
+
     }
-    printf("Iteration: %d\tGuess: %s\n", index, guess);
-
-    // Check if it compares
-    if (*password == RSHash1(guess, *possibleLen)) {
-
-      printf("Match Found Parallel!! Guess: %s\t ", guess);
-      *found = true;
-    }
-
   }
     return guess;
 
