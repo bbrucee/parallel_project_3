@@ -35,9 +35,6 @@ int main() {
     size_t password = ptr_hash(string(passwordStr));    
     printf("-Starting Non-Parallel Password Cracker-\n");
 
-    // Start Timer
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
     // Loop through len 1 - possible len
     for (int currLen = 1; currLen <= possibleLen; ++currLen) {
     // Loop for all possible combinations
@@ -53,7 +50,7 @@ int main() {
         //printf("Iteration: %d\tGuess: %s\n", currChar, guess);
 
         // Check if it compares
-        if (strcmp(password, guess) == 0) {
+        if ( password == ptr_hash(string(guess))) {
           printf("Match Found Single!! \nLen: %d\tGuess: %s\n",currLen, guess);
           break;
         }
