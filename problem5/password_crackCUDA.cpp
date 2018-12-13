@@ -63,6 +63,21 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
 }
 
 
+int RSHash1(char str[], size_t s)
+{
+    unsigned int b    = 378551;
+    unsigned int a    = 63689;
+    unsigned int hash = 0;
+
+    for(size_t i = 0; i < s; i++)
+    {
+        hash = hash * a + str[i];
+        a    = a * b;
+    }
+
+    return (hash & 0x7FFFFFFF);
+ }
+
 //Set size is 36 characters and one blank character
 int main() {
 
@@ -79,7 +94,7 @@ int main() {
     char passwordStr[] = "aabca";
 
     *possibleLen = strlen(passwordStr);
-    *password = RSHash(passwordStr, *possibleLen);
+    *password = RSHash1(passwordStr, *possibleLen);
     *setSize = 36;
     *found = false;
 
