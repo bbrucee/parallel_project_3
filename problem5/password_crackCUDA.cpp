@@ -162,6 +162,7 @@ int main() {
     cudaFree(setSize);
     cudaFree(possibleLen);
     cudaFree(found);
+    cudaFree(guess);
 
     return 0;
 }
