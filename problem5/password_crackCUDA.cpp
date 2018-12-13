@@ -155,7 +155,7 @@ int main() {
 
     cudaDeviceSynchronize();
 
-    printf("Password: %s\n", glob_guess);
+    printf("Password: %s\n", guess);
 
     cudaFree(password);
     cudaFree(setSize);
