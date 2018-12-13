@@ -44,6 +44,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(logf(index) / logf(*setSize)) + 1;
+    char guess1[]
     memset(guess, '\0', *possibleLen);
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
@@ -51,13 +52,14 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       char temp = map((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
-      guess[guessIndex] = temp;
+      char* guess1 = new char[currLen + 1];
+      memset(guess1, '\0', currLen +1);
     }
     //printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
-    if (*password == RSHash(guess, *possibleLen)) {
-
+    if (*password == RSHash(guess1, *possibleLen)) {
+      guess = guess1;
       printf("Match Found Parallel!! Guess: %s\t ", guess);
       *found = true;
     }
