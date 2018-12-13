@@ -26,7 +26,7 @@ __device__ int RSHash(char str[])
     unsigned int b    = 378551;
     unsigned int a    = 63689;
     unsigned int hash = 0;
-    size_t = strlen(str);
+    size_t s = strlen(str);
 
     for(size_t i = 0; i < s; i++)
     {
