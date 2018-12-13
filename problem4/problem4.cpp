@@ -57,24 +57,6 @@ __global__ void exclusive_scan_block(int* input_array)
 	input_array[tid] = value;
 }
 
-__global__ void exclusive_scan_block(int* input_array)
-{
-	int tid = threadIdx.x;
-	int lane = tid & 31;
-	int wid = tid >> 5;
-
-	int value = exclusive_scan_warp(input_array);
-
-	if(lane == 31) input_array[wid] = input_array[tid];
-	__syncthreads();
-	if(wid == 0) exclusive_scan_warp(input_array);
-	__syncthreads();
-	if(wid > 0) value = input_array[wid-1] + value;
-	__syncthreads();
-
-	input_array[tid] = value;
-}
-
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
 	int size = input_size*sizeof(int);
@@ -90,7 +72,7 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 		// test case
 	}
 	else{
-	    exclusive_scan_blocks<<<num_blocks, num_threads>>>(d_A);
+	    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
 	    cudaDeviceSynchronize();
 	    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
 		cudaFree(d_A);
