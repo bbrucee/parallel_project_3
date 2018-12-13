@@ -147,7 +147,7 @@ int main() {
       permutations += pow(*setSize, i);
     }
 
-    char guessMatrix[];
+    char *guessMatrix;
 
     cudaMallocManaged(&guessMatrix, permutations*possibleLen*sizeof(char));
 
