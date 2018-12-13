@@ -94,12 +94,11 @@ char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found,
 
     memset(guess, '\0', *possibleLen);
 
-    printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
-
     // Set guess
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       char temp = map1((index / (int) pow(*setSize, guessIndex)) % (int) *setSize);
       guess[guessIndex] = temp;
+      printf("guess in for loop: %s\n", guess);
     }
     printf("Iteration: %d\tGuess: %s\n", index, guess);
 
