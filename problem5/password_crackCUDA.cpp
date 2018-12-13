@@ -21,12 +21,11 @@ __device__ char map(int convert){
     return (char) convert + 87;
   }
 }
-__device__ int RSHash(char str[])
+__device__ int RSHash(char str[], size_t s)
 {
     unsigned int b    = 378551;
     unsigned int a    = 63689;
     unsigned int hash = 0;
-    size_t s = strlen(str);
 
     for(size_t i = 0; i < s; i++)
     {
@@ -54,7 +53,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
     //printf("Iteration: %d\tGuess: %s\n", index, guess);
 
     // Check if it compares
-    if (*password == RSHash(guess)) {
+    if (*password == RSHash(guess, *possibleLen)) {
 
       printf("Match Found Parallel!! Guess: %s\t ", guess);
       *found = true;
@@ -79,9 +78,9 @@ int main() {
 
     char passwordStr[] = "aabca";
 
-    *password = RSHash(passwordStr);
-    *setSize = 36;
     *possibleLen = strlen(passwordStr);
+    *password = RSHash(passwordStr, *possibleLen);
+    *setSize = 36;
     *found = false;
 
     cudaMallocManaged(&guess, sizeof(char) * (*possibleLen));
