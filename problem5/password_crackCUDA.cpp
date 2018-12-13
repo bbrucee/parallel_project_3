@@ -40,7 +40,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
   if(!*found) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
-    int currLen = (int)(logf(index) / logf(*setSize));
+    int currLen = (int)(logf(index) / logf(*setSize)) + 1;
     memset(guess, '\0', *possibleLen);
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
@@ -147,8 +147,8 @@ int main() {
     int threadsPerBlock = 256;
     int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
 
-    //cuda_crack<<<threadsPerBlock, numBlocks>>>(password, possibleLen, setSize, found, guess);
-    cuda_crack1(password, possibleLen, setSize, found, guess);
+    cuda_crack<<<threadsPerBlock, numBlocks>>>(password, possibleLen, setSize, found, guess);
+    //cuda_crack1(password, possibleLen, setSize, found, guess);
 
     cudaDeviceSynchronize();
 
