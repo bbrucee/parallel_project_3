@@ -12,6 +12,9 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <cuda.h>
+#include <cuda_runtime.h>
+
 using namespace std;
 
 __device__ char map(int convert){
@@ -147,7 +150,7 @@ int main() {
     int threadsPerBlock = 256;
     int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
 
-    cuda_crack<<<threadsPerBlock, numBlocks>>>(password, possibleLen, setSize, found, guess);
+    cuda_crack<<<numBlocks, threadsPerBlock, threadsPerBlock * sizeof(double)>>>(password, possibleLen, setSize, found, guess);
     //cuda_crack1(password, possibleLen, setSize, found, guess);
 
     cudaDeviceSynchronize();
