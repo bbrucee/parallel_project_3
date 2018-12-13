@@ -150,7 +150,7 @@ int main() {
     int threadsPerBlock = 256;
     int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
 
-    cuda_crack<<<numBlocks, threadsPerBlock, threadsPerBlock * sizeof(double)>>>(password, possibleLen, setSize, found, guess);
+    cuda_crack<<<threadsPerBlock, numBlocks>>>(password, possibleLen, setSize, found, guess);
     //cuda_crack1(password, possibleLen, setSize, found, guess);
 
     cudaDeviceSynchronize();
