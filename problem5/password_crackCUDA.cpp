@@ -149,7 +149,7 @@ int main() {
 
     char *guessMatrix;
 
-    cudaMallocManaged(&guessMatrix, permutations*possibleLen*sizeof(char));
+    cudaMallocManaged(&guessMatrix, permutations*(*possibleLen)*sizeof(char));
 
     int threadsPerBlock = 256;
     int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
