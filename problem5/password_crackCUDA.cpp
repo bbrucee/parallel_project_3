@@ -39,13 +39,12 @@ __device__ int RSHash(char str[], size_t s)
     return (hash & 0x7FFFFFFF);
  }
 
-__global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[]) {
+__global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, bool *found, char guess[], char guessMatrix[]) {
   if(!*found) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     //printf("Values: %d\t %s\n", currLen, password);
     int currLen = (int)(logf(index) / logf(*setSize)) + 1;
-      char* guess1 = (char*) malloc(currLen * sizeof(char));
-      memset(guess1, '\0', currLen);
+      char* guess1 = guessMatrix + index*sizeof(char)*possibleLen;
 
     //printf("Pass: %d\t Thread: %d\t Start: %d\t End: %d\n", currLen, currThread, passStart, passStart + partitionOfPass);
 
@@ -148,10 +147,14 @@ int main() {
       permutations += pow(*setSize, i);
     }
 
+    char guessMatrix[][];
+
+    cudaMallocManaged(&guessMatrix, N*possibleLen*sizeof(char));
+
     int threadsPerBlock = 256;
     int numBlocks = (permutations + threadsPerBlock -1) / threadsPerBlock;
 
-    cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess);
+    cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, guessMatrix);
     //cuda_crack1(password, possibleLen, setSize, found, guess);
 
     cudaDeviceSynchronize();
