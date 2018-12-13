@@ -62,7 +62,7 @@ __global__ void cuda_crack(size_t *password, int *possibleLen, int *setSize, boo
       *found = true;
     }
     //printf("Thread: %d Finished! Iterations: %d\n", currThread, count);
-    free(guess1)
+    free(guess1);
   }
 }
 
