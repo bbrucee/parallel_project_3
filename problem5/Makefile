@@ -10,4 +10,6 @@ clean:
 	rm crack
 
 crack:
-	$(CC) $(CFLAGS) password_crack.cpp -arch=compute_35 -o crack
+	$(CC) $(CFLAGS) password_crackCUDA.cpp -arch=compute_35 -o crack
+cpu:
+	$(CC) $(CFLAGS) password_crackCPU.cpp -arch=compute_35 -o crack
