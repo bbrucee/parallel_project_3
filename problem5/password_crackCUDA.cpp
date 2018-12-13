@@ -89,7 +89,7 @@ char* cuda_crack1(size_t *password, int *possibleLen, int *setSize, bool *found,
   if(!*found) {
     //int index = blockIdx.x * blockDim.x + threadIdx.x;
     int index = 100;
-    int currLen = (int)(log(index) / log(*setSize));
+    int currLen = (int)(log(index) / log(*setSize)) + 1;
     printf("Values: %d\t %d\n", currLen, *password);
 
     memset(guess, '\0', *possibleLen);
