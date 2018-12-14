@@ -15,6 +15,9 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
+#define maxBlocks 65000
+#define threadsPerBlock 1024
+
 using namespace std;
 
 __device__ char map(int convert){
@@ -41,10 +44,9 @@ __device__ int RSHash(char str[], int s)
 }
 
 
-__global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *found, char* retGuess) {
-
+__global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *found, char* retGuess, int numGrid) {
   if (!(*found)) {
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
+    int index = (blockIdx.x * blockDim.x + threadIdx.x) + numGrid*maxBlocks*threadsPerBlock;
 
     int currLen = (int)(logf(index) / logf(setSize)) + 1;
 
@@ -54,8 +56,8 @@ __global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *f
       guess[guessIndex] = map((index / (int) powf(setSize, guessIndex)) % (int) setSize);
     }
 
-    if (password == RSHash(guess, 5)) {
-        memcpy(retGuess, guess, 5);
+    if (password == RSHash(guess, possibleLen)) {
+        memcpy(retGuess, guess, possibleLen);
         *found = true;
     }
   }
@@ -98,13 +100,25 @@ int main() {
     }
 
 
-    int threadsPerBlock = 1024;
-    int numBlocks = permutations / threadsPerBlock;
+    int numGrids = (permutations / (threadsPerBlock * maxBlocks)) + 1;
+    int numBlocks;
+    for (int grid = 0; grid < numGrids; grid++) {
+      if (permutations < threadsPerBlock*maxBlocks) {
+        numBlocks = permutations / threadsPerBlock;
+      } else {
+        permutations -= threadsPerBlock*maxBlocks;
+        numBlocks = threadsPerBlock*maxBlocks;
+      }
+      //<<<numBlocks, threadsPerBlock>>>
+      cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, grid);
+      cudaDeviceSynchronize();
 
-    //<<<numBlocks, threadsPerBlock>>>
-    cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess);
+      if (*found) {
+        break;
+      }
+    }
 
-    cudaDeviceSynchronize();
+
 
     printf("Password: %s\n", guess);
 
