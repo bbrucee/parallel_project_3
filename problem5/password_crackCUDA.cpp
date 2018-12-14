@@ -78,7 +78,7 @@ int RSHash_cpu(char str[], int s)
 }
 
 //Set size is 36 characters and one blank character
-int main() {
+int original_main() {
     char passwordStr[] = "aabca";
 
     int possibleLen = strlen(passwordStr);
@@ -129,3 +129,74 @@ int main() {
     return 0;
 }
 
+int speedtest(char* input_string) {
+    char passwordStr[] = input_string;
+
+    int possibleLen = strlen(passwordStr);
+    int password = RSHash_cpu(passwordStr, possibleLen);
+    int setSize = 36;
+
+    struct timespec start, finish;
+    double elapsed;
+    printf("-Starting CUDA Password Cracker-\n");
+    // Start Timer
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    bool *found;
+    char *guess;
+    cudaMallocManaged(&found, sizeof(bool));
+    cudaMallocManaged(&guess, sizeof(char)*possibleLen);
+    *found = false;
+
+
+    long permutations = 0;
+    for (int i = 1; i <= possibleLen; i++) {
+      permutations += pow(setSize, i);
+    }
+    //printf("perm: %ld\n", permutations);
+    long maxBlocks = 65000;
+    long threadsPerBlock = 1024;
+
+
+    int numGrids = (permutations / (threadsPerBlock * maxBlocks)) + 1;
+    int numBlocks;
+    for (long grid = 0; grid < numGrids; grid++) {
+      if (permutations < threadsPerBlock*maxBlocks) {
+        numBlocks = permutations / threadsPerBlock;
+      } else {
+        permutations -= threadsPerBlock*maxBlocks;
+        numBlocks = threadsPerBlock*maxBlocks;
+      }
+      //<<<numBlocks, threadsPerBlock>>>
+      cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, (grid*maxBlocks*threadsPerBlock));
+      cudaDeviceSynchronize();
+
+      if (*found) {
+        break;
+      }
+    }
+
+
+
+    printf("Password: %s\n", guess);
+
+    cudaFree(found);
+    cudaFree(guess);
+
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    elapsed = (finish.tv_sec - start.tv_sec);
+    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    printf("Time: %f\n", elapsed);
+
+    return 0;
+}
+
+
+int main()
+{
+  string passwords[10] = {"bv37qi#f", "racecar", "141njif", "alx9123n", "123dnar3", "password", "parall12", "a2312", "912341", "1332"};
+  for(int i=0; i<10; i++){
+    speedtest(passwords[i]);
+  }
+  return 0;
+}
