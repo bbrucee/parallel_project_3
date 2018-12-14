@@ -83,7 +83,7 @@ extern void exclusive_scan_addition(int* input_array, int* output_array, int inp
     return;
 }
 
-void find_repeatsCPU(int* input_array, int* output_array, int input_size)
+void find_repeats(int* input_array, int* output_array, int input_size)
 {
 	for(int i = 0; i<input_size-1; i++){
 		if(input_array[i] == input_array[i+1])
@@ -92,51 +92,6 @@ void find_repeatsCPU(int* input_array, int* output_array, int input_size)
 			output_array[i] = 0;
 	}
 
-}
-
-__global__ void find_repeatsKernel(int* input_array, int* output_array, long int input_size)
-{
-	extern __shared__ int samples[];
-	extern __shared__ int repeats[];
-	// Each thread loads one element from global to shared mem
-    int i = blockIdx.x*blockDim.x + threadIdx.x;
-    int tid =  threadIdx.x;
-    samples[tid] = input_array[i];
-    __syncthreads();
-
-   	for(int s=1; s<blockDim.x; s*=2){
-   		int index = 2*s*tid;
-   		if(index < blockDim.x && ((index+s) < input_size)){
-   			if(maximum[index] < maximum[index+s])
-   				maximum[index] = maximum[index+s];
-   		}
-   		__syncthreads();
-   	}
-
-	if (tid==0) array_max[blockIdx.x] = maximum[0];
-}
-
-extern double find_repeats(double* input_array, long int input_size)
-{
-
-	long int size = input_size*sizeof(double);
-	double* d_A;
-	cudaMalloc(&d_A, size);
-	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-
-	double* d_B;
-	cudaMalloc(&d_B, num_blocks*sizeof(double));
-
-	double max_value[num_blocks] = {0};
-    find_maxKernel<<<num_blocks, num_threads, num_threads*sizeof(double)>>>(d_A, d_B, input_size);
-    cudaDeviceSynchronize();
-
-    cudaMemcpy(max_value, d_B, num_blocks*sizeof(double), cudaMemcpyDeviceToHost);
-
-	  cudaFree(d_A);
-  	cudaFree(d_B);
-
-    return find_maxCPU(max_value, num_blocks);
 }
 
 void find_repeats_index(int* repeat_array, int* scanned_array, int* output_array, int input_size)
