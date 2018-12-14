@@ -109,8 +109,8 @@ void* crack(void* args){
 
 int speedtest(char* input_string) {
   // char passwordStr[] = input_string;
-  printf("Returned Value: %s\n", input_string);
   int possibleLen = strlen(input_string);
+  printf("Returned Value: %d\n", possibleLen);
 
   hash<string> ptr_hash;
   size_t password = ptr_hash(string(input_string));    
