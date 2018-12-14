@@ -6,6 +6,7 @@ __global__  void  AplusB( char  *ret,  int  a,  int  b, char* tempChar) {
   char guess[] = "temp";
   if (threadIdx.x == 99) {
     ret[threadIdx.x] = (char)36;
+    memcpy(tempChar, guess, 5);
   } else {
     ret[threadIdx.x] = (char) (a + b + threadIdx.x);
   }
