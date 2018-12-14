@@ -207,6 +207,6 @@ int main()
 	exclusive_scan_additionTest2();
 	find_repeatsTest();
 	find_repeats_indexTest();
-	exit();
+	exit(0);
 	return 0;
 }
