@@ -163,7 +163,7 @@ void find_repeatsTest()
 	expected_output[9] = 0;
 	find_repeats(test_array, 10);
 	for(int i = 0; i < 10; i++){
-		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
+		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
 	}
 	printf(" -------------------------- \n");
 }
