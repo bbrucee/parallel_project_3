@@ -97,7 +97,7 @@ void find_repeats(int* input_array, int input_size)
 void find_repeats_index(int* repeat_array, int* scanned_array, int input_size)
 {
 	for(int i = 0; i < input_size; i++){
-		if(repeat_array == 1)
+		if(repeat_array[i] == 1)
 			repeats_index[scanned_array[i]] = i;
 	}
 
