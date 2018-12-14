@@ -128,11 +128,11 @@ void exclusive_scan_additionTest2()
 	printf("Running exclusive_scan_additionTest2()\n -------------------------- \n");  
 	initialize_A();
 	exclusive_scan_addition(A, A_size);
+	A_copy[0] = 0;
 	for (int j=0; j<=A_size-1; j++) {
 	    if (j > 0)
 	        A_copy[j] = A_copy[j] + A_copy[j-1];
 	}
-	A_copy[0] = 0;
 	for(int i = 0; i < 20; i++){
 		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
 	}
