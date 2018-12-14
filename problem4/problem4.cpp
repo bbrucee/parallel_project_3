@@ -12,6 +12,7 @@ int A_size = 1000;
 int A[1000];
 int A_copy[1000];
 int repeats[1000];
+int repeats_index[1000];
 
 int num_threads = 1000;
 int num_blocks = 0;
@@ -93,6 +94,15 @@ void find_repeats(int* input_array, int input_size)
 
 }
 
+void find_repeats_index(int* repeat_array, int* scanned_array, int input_size)
+{
+	for(int i = 0; i < input_size; i++){
+		if(repeat_array == 1)
+			repeats_index[scanned_array[i]] = i;
+	}
+
+}
+
 void set_blocks(long int input_size)
 {
 	while(num_threads*num_blocks < input_size){
@@ -169,10 +179,69 @@ void find_repeatsTest()
 	printf(" -------------------------- \n");
 }
 
+void find_repeatsTest()
+{
+	printf("Running find_repeatsTest()\n -------------------------- \n");  
+	int test_array[10], expected_output[10];
+	test_array[0] = 1;
+	test_array[1] = 2;
+	test_array[2] = 2;
+	test_array[3] = 1;
+	test_array[4] = 1;
+	test_array[5] = 1;
+	test_array[6] = 3;
+	test_array[7] = 5;
+	test_array[8] = 3;
+	test_array[9] = 3;
+	expected_output[0] = 0;
+	expected_output[1] = 1;
+	expected_output[2] = 0;
+	expected_output[3] = 1;
+	expected_output[4] = 1;
+	expected_output[5] = 0;
+	expected_output[6] = 0;
+	expected_output[7] = 0;
+	expected_output[8] = 1;
+	expected_output[9] = 0;
+	find_repeats(test_array, 10);
+	for(int i = 0; i < 10; i++){
+		printf("test_array[%d] = %d expected %d \n", i, repeats[i], expected_output[i]);
+	}
+	printf(" -------------------------- \n");
+}
+
+void find_repeats_indexTest()
+{
+	printf("Running find_repeats_indexTest()\n -------------------------- \n");  
+	int test_array[10], expected_output[4];
+	test_array[0] = 1;
+	test_array[1] = 2;
+	test_array[2] = 2;
+	test_array[3] = 1;
+	test_array[4] = 1;
+	test_array[5] = 1;
+	test_array[6] = 3;
+	test_array[7] = 5;
+	test_array[8] = 3;
+	test_array[9] = 3;
+	expected_output[0] = 1;
+	expected_output[1] = 3;
+	expected_output[2] = 4;
+	expected_output[3] = 8;
+	find_repeats(test_array, 10); //repeats array now has repeats
+	exclusive_scan_addition(test_array, 10); //test_array now has exclusive scan add of repeats
+	find_repeats_index(repeats, test_array, 10);
+	for(int i = 0; i < 4; i++){
+		printf("index_array[%d] = %d expected %d \n", i, repeats_index[i], expected_output[i]);
+	}
+	printf(" -------------------------- \n");
+}
+
 int main()
 {
 	exclusive_scan_additionTest1();
 	exclusive_scan_additionTest2();
 	find_repeatsTest();
+	find_repeats_indexTest();
 	return 0;
 }
