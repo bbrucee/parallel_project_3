@@ -75,9 +75,10 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
+	printf("%d\n", num_blocks);
     exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
     cudaDeviceSynchronize();
-    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
+    cudaMemcpy(input_array, d_A, size, cudaMemcpyDeviceToHost);
 	cudaFree(d_A);
     return;
 }
