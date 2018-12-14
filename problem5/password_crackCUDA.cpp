@@ -130,10 +130,10 @@ int original_main() {
 }
 
 int speedtest(char* input_string) {
-    char passwordStr[] = input_string;
+    // char passwordStr[] = input_string;
 
-    int possibleLen = strlen(passwordStr);
-    int password = RSHash_cpu(passwordStr, possibleLen);
+    int possibleLen = strlen(input_string);
+    int password = RSHash_cpu(input_string, possibleLen);
     int setSize = 36;
 
     struct timespec start, finish;
