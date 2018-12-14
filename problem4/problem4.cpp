@@ -194,7 +194,7 @@ void find_repeats_indexTest()
 	expected_output[3] = 8;
 	find_repeats(test_array, repeats, 10);
 	exclusive_scan_addition(repeats, scan_result, 10);
-	find_repeats_index(repeats, repeats_index, 10);
+	find_repeats_index(repeats, scan_result, repeats_index, 10);
 	for(int i = 0; i < 4; i++){
 		printf("index_array[%d] = %d expected %d \n", i, repeats_index[i], expected_output[i]);
 	}
