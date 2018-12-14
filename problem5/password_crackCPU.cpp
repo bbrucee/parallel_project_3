@@ -155,9 +155,8 @@ int speedtest(char* input_string) {
 
 int main()
 {
-  char* passwords[] = {(char*)"bv37qi#f", (char*)"racecar", (char*)"141njif", (char*)"alx9123n",
-                      (char*)"123dnar3", (char*)"password", (char*)"parall12", (char*)"a2312", 
-                      (char*)"912341", (char*)"1332"};
+  char* passwords[] = {(char*)"p", (char*)"ar", (char*)"esd", (char*)"reds",
+                      (char*)"pooty", (char*)"spoots", (char*)"paral12", (char*)"bv37qi#f"};
   for(int i=0; i<10; i++){
     speedtest(passwords[i]);
   }
