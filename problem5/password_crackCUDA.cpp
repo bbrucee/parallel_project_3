@@ -15,8 +15,6 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 
-#define maxBlocks 65000
-#define threadsPerBlock 1024
 
 using namespace std;
 
@@ -44,16 +42,16 @@ __device__ int RSHash(char str[], int s)
 }
 
 
-__global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *found, char* retGuess, int numGrid) {
+__global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *found, char* retGuess, long lastIndex) {
   if (!(*found)) {
-    int index = (blockIdx.x * blockDim.x + threadIdx.x) + numGrid*maxBlocks*threadsPerBlock;
+    long index = (blockIdx.x * blockDim.x + threadIdx.x) + lastIndex;
 
-    int currLen = (int)(logf(index) / logf(setSize)) + 1;
+    long currLen = (int)(logf(index) / logf(setSize)) + 1;
 
-    char guess[5];
+    char guess[6];
 
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
-      guess[guessIndex] = map((index / (int) powf(setSize, guessIndex)) % (int) setSize);
+      guess[guessIndex] = map((index / (long) powf(setSize, guessIndex)) % setSize);
     }
 
     if (password == RSHash(guess, possibleLen)) {
@@ -94,15 +92,18 @@ int main() {
     *found = false;
 
 
-    int permutations = 0;
+    long permutations = 0;
     for (int i = 1; i <= possibleLen; i++) {
       permutations += pow(setSize, i);
     }
+    //printf("perm: %ld\n", permutations);
+    long maxBlocks = 65000;
+    long threadsPerBlock = 1024;
 
 
     int numGrids = (permutations / (threadsPerBlock * maxBlocks)) + 1;
     int numBlocks;
-    for (int grid = 0; grid < numGrids; grid++) {
+    for (long grid = 0; grid < numGrids; grid++) {
       if (permutations < threadsPerBlock*maxBlocks) {
         numBlocks = permutations / threadsPerBlock;
       } else {
@@ -110,7 +111,7 @@ int main() {
         numBlocks = threadsPerBlock*maxBlocks;
       }
       //<<<numBlocks, threadsPerBlock>>>
-      cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, grid);
+      cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, (grid*maxBlocks*threadsPerBlock));
       cudaDeviceSynchronize();
 
       if (*found) {
