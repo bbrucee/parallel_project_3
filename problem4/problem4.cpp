@@ -66,21 +66,12 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-	if(input_size < 10) {
-	    exclusive_scan_block<<<1, input_size>>>(d_A);
-		cudaDeviceSynchronize();
-        cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
-		cudaFree(d_A);
-		return;
-		// test case
-	}
-	else{
-	    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
-	    cudaDeviceSynchronize();
-	    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
-		cudaFree(d_A);
-	    return;
-	}
+
+    exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
+    cudaDeviceSynchronize();
+    cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
+	cudaFree(d_A);
+    return;
 }
 
 void find_repeats(int* input_array, int input_size)
@@ -135,7 +126,6 @@ void exclusive_scan_additionTest2()
 {
 	printf("Running exclusive_scan_additionTest2()\n -------------------------- \n");  
 	initialize_A();
-	set_blocks(A_size);
 	exclusive_scan_addition(A, A_size);
 	for (int j=0; j<=A_size-1; j++) {
 	    if (j > 0)
@@ -208,6 +198,7 @@ void find_repeats_indexTest()
 
 int main()
 {
+	set_blocks(A_size);
 	exclusive_scan_additionTest1();
 	exclusive_scan_additionTest2();
 	find_repeatsTest();
