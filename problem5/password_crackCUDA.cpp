@@ -176,8 +176,6 @@ int speedtest(char* input_string) {
       }
     }
 
-
-
     printf("Password: %s\n", guess);
 
     cudaFree(found);
@@ -194,7 +192,8 @@ int speedtest(char* input_string) {
 
 int main()
 {
-  string passwords[10] = {"bv37qi#f", "racecar", "141njif", "alx9123n", "123dnar3", "password", "parall12", "a2312", "912341", "1332"};
+  char* passwords[] = {(char*)"p", (char*)"ar", (char*)"esd", (char*)"reds",
+                      (char*)"pooty", (char*)"spoots", (char*)"paral12", (char*)"bv37qi#f"};
   for(int i=0; i<10; i++){
     speedtest(passwords[i]);
   }
