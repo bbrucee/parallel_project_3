@@ -11,6 +11,8 @@ using namespace std;
 int A_size = 1000;
 int A[1000];
 int A_copy[1000];
+
+int scan_result[1000];
 int repeats[1000];
 int repeats_index[1000];
 
@@ -68,7 +70,7 @@ __global__ void exclusive_scan_block(int* input_array)
 	input_array[tid] = value;
 }
 
-extern void exclusive_scan_addition(int* input_array, int input_size)
+extern void exclusive_scan_addition(int* input_array, int* output_array, int input_size)
 {
 	int size = input_size*sizeof(int);
 	int* d_A;
@@ -76,28 +78,27 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
     exclusive_scan_block<<<1, num_threads>>>(d_A);
     cudaDeviceSynchronize();
-    cudaMemcpy(input_array, d_A, size, cudaMemcpyDeviceToHost);
+    cudaMemcpy(output_array, d_A, size, cudaMemcpyDeviceToHost);
 	cudaFree(d_A);
     return;
 }
 
-void find_repeats(int* input_array, int input_size)
+void find_repeats(int* input_array, int* output_array, int input_size)
 {
 	for(int i = 0; i<input_size-1; i++){
 		if(input_array[i] == input_array[i+1])
-			repeats[i] = 1;
+			output_array[i] = 1;
 		else
-			repeats[i] = 0;
+			output_array[i] = 0;
 	}
 
 }
 
-void find_repeats_index(int* repeat_array, int* scanned_array, int input_size)
+void find_repeats_index(int* repeat_array, int* scanned_array, int* output_array, int input_size)
 {
 	for(int i = 0; i < input_size; i++){
 		if(repeat_array[i] == 1)
-			printf("%d %d %d\n", repeat_array[i], scanned_array[i], i);
-			// repeats_index[scanned_array[i]] = i;
+			output_array[scanned_array[i]] = i;
 	}
 
 }
@@ -116,7 +117,7 @@ void exclusive_scan_additionTest1()
 	expected_output[2] = 5;
 	expected_output[3] = 11;
 	expected_output[4] = 19;
-	exclusive_scan_addition(test_array, 5);
+	exclusive_scan_addition(test_array, test_array, 5);
 	for(int i = 0; i < 5; i++){
 		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
 	}
@@ -134,7 +135,7 @@ void exclusive_scan_additionTest2()
 		A_copy[i] = A_copy[i-1];
 	}
 	A_copy[0] = 0;
-	exclusive_scan_addition(A, A_size);
+	exclusive_scan_addition(A, A, A_size);
 
 	for(int i = 0; i < 20; i++){
 		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
@@ -166,9 +167,9 @@ void find_repeatsTest()
 	expected_output[7] = 0;
 	expected_output[8] = 1;
 	expected_output[9] = 0;
-	find_repeats(test_array, 10);
+	find_repeats(test_array, test_array, 10);
 	for(int i = 0; i < 10; i++){
-		printf("test_array[%d] = %d expected %d \n", i, repeats[i], expected_output[i]);
+		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
 	}
 	printf(" -------------------------- \n");
 }
@@ -191,9 +192,9 @@ void find_repeats_indexTest()
 	expected_output[1] = 3;
 	expected_output[2] = 4;
 	expected_output[3] = 8;
-	find_repeats(test_array, 10); //repeats array now has repeats
-	exclusive_scan_addition(repeats, 10); //test_array now has exclusive scan add of repeats
-	find_repeats_index(repeats, test_array, 10);
+	find_repeats(test_array, repeats, 10);
+	exclusive_scan_addition(repeats, scan_result, 10);
+	find_repeats_index(repeats, repeats_index, 10);
 	for(int i = 0; i < 4; i++){
 		printf("index_array[%d] = %d expected %d \n", i, repeats_index[i], expected_output[i]);
 	}
