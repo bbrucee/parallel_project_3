@@ -179,37 +179,6 @@ void find_repeatsTest()
 	printf(" -------------------------- \n");
 }
 
-void find_repeatsTest()
-{
-	printf("Running find_repeatsTest()\n -------------------------- \n");  
-	int test_array[10], expected_output[10];
-	test_array[0] = 1;
-	test_array[1] = 2;
-	test_array[2] = 2;
-	test_array[3] = 1;
-	test_array[4] = 1;
-	test_array[5] = 1;
-	test_array[6] = 3;
-	test_array[7] = 5;
-	test_array[8] = 3;
-	test_array[9] = 3;
-	expected_output[0] = 0;
-	expected_output[1] = 1;
-	expected_output[2] = 0;
-	expected_output[3] = 1;
-	expected_output[4] = 1;
-	expected_output[5] = 0;
-	expected_output[6] = 0;
-	expected_output[7] = 0;
-	expected_output[8] = 1;
-	expected_output[9] = 0;
-	find_repeats(test_array, 10);
-	for(int i = 0; i < 10; i++){
-		printf("test_array[%d] = %d expected %d \n", i, repeats[i], expected_output[i]);
-	}
-	printf(" -------------------------- \n");
-}
-
 void find_repeats_indexTest()
 {
 	printf("Running find_repeats_indexTest()\n -------------------------- \n");  
