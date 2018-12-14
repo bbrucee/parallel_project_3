@@ -17,6 +17,14 @@ int repeats_index[1000];
 int num_threads = 1000;
 int num_blocks = 0;
 
+void set_blocks(long int input_size)
+{
+	num_blocks = 0;
+	while(num_threads*num_blocks < input_size){
+		num_blocks++;
+	}
+}
+
 
 void initialize_A()
 {
@@ -62,11 +70,11 @@ __global__ void exclusive_scan_block(int* input_array)
 
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
+	set_blocks(input_size);
 	int size = input_size*sizeof(int);
 	int* d_A;
 	cudaMalloc(&d_A, size);
 	cudaMemcpy(d_A, input_array, size, cudaMemcpyHostToDevice);
-
     exclusive_scan_block<<<num_blocks, num_threads>>>(d_A);
     cudaDeviceSynchronize();
     cudaMemcpy(input_array, d_A, input_size*sizeof(int), cudaMemcpyDeviceToHost);
@@ -92,13 +100,6 @@ void find_repeats_index(int* repeat_array, int* scanned_array, int input_size)
 			repeats_index[scanned_array[i]] = i;
 	}
 
-}
-
-void set_blocks(long int input_size)
-{
-	while(num_threads*num_blocks < input_size){
-		num_blocks++;
-	}
 }
 
 void exclusive_scan_additionTest1()
@@ -198,7 +199,6 @@ void find_repeats_indexTest()
 
 int main()
 {
-	set_blocks(A_size);
 	exclusive_scan_additionTest1();
 	exclusive_scan_additionTest2();
 	find_repeatsTest();
