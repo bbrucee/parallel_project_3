@@ -1,16 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <iostream>
-#include <functional>
-#include <string>
-
-#include <math.h>
-#include <signal.h>
-#include <ctime>
-#include <pthread.h>
-#include <unistd.h>
+#include "password_crack.h"
 
 using namespace std;
 
@@ -120,12 +108,12 @@ void* crack(void* args){
 }
 
 int speedtest(char* input_string) {
-  char passwordStr[] = input_string;
+  // char passwordStr[] = input_string;
 
-  int possibleLen = strlen(passwordStr);
+  int possibleLen = strlen(input_string);
 
   hash<string> ptr_hash;
-  size_t password = ptr_hash(string(passwordStr));    
+  size_t password = ptr_hash(string(input_string));    
   printf("-Starting pthread Password Cracker-\n");
   int numThreads = 4;
 
