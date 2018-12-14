@@ -7,10 +7,11 @@
 
 using namespace std;
 
-int A_size = 1000000;
-int A[1000000];
-int A_copy[1000000];
-int repeats[1000000];
+//Only works for arrays smaller than threadsperblock because our CUDA stuff only scans one block
+int A_size = 1000;
+int A[1000];
+int A_copy[1000];
+int repeats[1000];
 
 int num_threads = 1000;
 int num_blocks = 0;
@@ -163,7 +164,7 @@ void find_repeatsTest()
 	expected_output[9] = 0;
 	find_repeats(test_array, 10);
 	for(int i = 0; i < 10; i++){
-		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
+		printf("test_array[%d] = %d expected %d \n", i, repeats[i], expected_output[i]);
 	}
 	printf(" -------------------------- \n");
 }
