@@ -14,8 +14,6 @@ __device__ char map(int convert){
 }
 
 __global__  void  AplusB( char  *ret,  int  a,  int  b, char* tempChar) {
-
-  if (threadIdx.x == 88) {
     ret[threadIdx.x] = (char)36;
 
     int setSize = 36;
@@ -27,10 +25,9 @@ __global__  void  AplusB( char  *ret,  int  a,  int  b, char* tempChar) {
       guess[guessIndex] = map((index / (int) powf(setSize, guessIndex)) % (int) setSize);
     }
 
-    memcpy(tempChar, guess, 3);
-  } else {
-    ret[threadIdx.x] = (char) (a + b + threadIdx.x);
-  }
+    if (index == 90) {
+        memcpy(tempChar, guess, 3);
+    }
 }
 
 int main() {
