@@ -10,6 +10,7 @@ using namespace std;
 int A_size = 1000000;
 int A[1000000];
 int A_copy[1000000];
+int repeats[1000000];
 
 int num_threads = 1000;
 int num_blocks = 0;
@@ -82,14 +83,13 @@ extern void exclusive_scan_addition(int* input_array, int input_size)
 
 void find_repeats(int* input_array, int input_size)
 {
-	vector<int> B, C;
-	for(int i = 0; i < input_size-1; i++){
-		if(input_array[i] == input_array[i+1]) B.push_back(i);
+	for(int i = 0; i<input_size-1; i++){
+		if(input_array[i] == input_array[i+1])
+			repeats[i] = 1;
+		else
+			repeats[i] = 0;
 	}
-	if(B[0] != 0) C.push_back(input_array[0]);
-	for(int j = 0; j < B.size()-1; j++){
-		if(B[j] != B[j+1]) C.push_back(input_array[B[j]]);
-	}	
+
 }
 
 void set_blocks(long int input_size)
@@ -137,9 +137,41 @@ void exclusive_scan_additionTest2()
 	printf(" -------------------------- \n");
 }
 
+void find_repeatsTest()
+{
+	printf("Running find_repeatsTest()\n -------------------------- \n");  
+	int test_array[10], expected_output[10];
+	test_array[0] = 1;
+	test_array[1] = 2;
+	test_array[2] = 2;
+	test_array[3] = 1;
+	test_array[4] = 1;
+	test_array[5] = 1;
+	test_array[6] = 3;
+	test_array[7] = 5;
+	test_array[8] = 3;
+	test_array[9] = 3;
+	expected_output[0] = 0;
+	expected_output[1] = 1;
+	expected_output[2] = 0;
+	expected_output[3] = 1;
+	expected_output[4] = 1;
+	expected_output[5] = 0;
+	expected_output[6] = 0;
+	expected_output[7] = 0;
+	expected_output[8] = 1;
+	expected_output[9] = 0;
+	find_repeats(test_array, 10);
+	for(int i = 0; i < 10; i++){
+		printf("test_array[%d] = %d expected %d \n", i, A[i], A_copy[i]);
+	}
+	printf(" -------------------------- \n");
+}
+
 int main()
 {
 	exclusive_scan_additionTest1();
 	exclusive_scan_additionTest2();
+	find_repeatsTest();
 	return 0;
 }
