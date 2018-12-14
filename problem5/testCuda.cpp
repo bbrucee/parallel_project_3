@@ -13,13 +13,14 @@ __device__ char map(int convert){
   }
 }
 
-__global__  void  AplusB( char  *ret,  int  a,  int  b, char* tempChar) {
-    ret[threadIdx.x] = (char)36;
+__global__  void  cuda_crack( char  *ret,  int  a,  int  b, char* tempChar) {
 
-    int setSize = 36;
-    int index = blockIdx.x * blockDim.x + threadIdx.x;
-    int currLen = (int)(logf(index) / logf(setSize)) + 1;
-    char guess[5];
+  ret[threadIdx.x] = (char)36;
+
+  int setSize = 36;
+  int index = blockIdx.x * blockDim.x + threadIdx.x;
+  int currLen = (int)(logf(index) / logf(setSize)) + 1;
+  char guess[5];
 
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       guess[guessIndex] = map((index / (int) powf(setSize, guessIndex)) % (int) setSize);
@@ -39,7 +40,7 @@ int main() {
   printf("Check before: %s\n", tempChar);
   
   //<<<numBlocks, threadsPerBlock>>>
-  AplusB<<< 1, 100 >>>(ret, 10, 10, tempChar);
+  cuda_crack<<< 1, 100 >>>(ret, 10, 10, tempChar);
   cudaDeviceSynchronize();
 
   for(int i=0; i<100; i++)
