@@ -70,7 +70,6 @@ __global__ void exclusive_scan_block(int* input_array)
 
 extern void exclusive_scan_addition(int* input_array, int input_size)
 {
-	set_blocks(input_size);
 	int size = input_size*sizeof(int);
 	int* d_A;
 	cudaMalloc(&d_A, size);
