@@ -167,9 +167,9 @@ void find_repeatsTest()
 	expected_output[7] = 0;
 	expected_output[8] = 1;
 	expected_output[9] = 0;
-	find_repeats(test_array, test_array, 10);
+	find_repeats(test_array, repeats, 10);
 	for(int i = 0; i < 10; i++){
-		printf("test_array[%d] = %d expected %d \n", i, test_array[i], expected_output[i]);
+		printf("test_array[%d] = %d expected %d \n", i, repeats[i], expected_output[i]);
 	}
 	printf(" -------------------------- \n");
 }
