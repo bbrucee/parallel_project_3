@@ -96,8 +96,7 @@ void find_repeats_index(int* repeat_array, int* scanned_array, int input_size)
 {
 	for(int i = 0; i < input_size; i++){
 		if(repeat_array[i] == 1)
-			printf("%d %d %d\n", repeat_array[i], scanned_array[i], i);
-			// repeats_index[scanned_array[i]] = i;
+			repeats_index[scanned_array[i]] = i;
 	}
 
 }
@@ -192,7 +191,7 @@ void find_repeats_indexTest()
 	expected_output[2] = 4;
 	expected_output[3] = 8;
 	find_repeats(test_array, 10); //repeats array now has repeats
-	exclusive_scan_addition(test_array, 10); //test_array now has exclusive scan add of repeats
+	exclusive_scan_addition(repeats, 10); //test_array now has exclusive scan add of repeats
 	find_repeats_index(repeats, test_array, 10);
 	for(int i = 0; i < 4; i++){
 		printf("index_array[%d] = %d expected %d \n", i, repeats_index[i], expected_output[i]);
