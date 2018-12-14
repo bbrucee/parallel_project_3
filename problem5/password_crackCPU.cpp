@@ -12,8 +12,6 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#include "password_crack.h"
-
 using namespace std;
 
 char map(int convert){
