@@ -43,47 +43,46 @@ __device__ int RSHash(char str[], int s)
 
 __global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *found, char* retGuess) {
 
-  if (!*found) {
+  if (!(*found)) {
     int index = blockIdx.x * blockDim.x + threadIdx.x;
 
     int currLen = (int)(logf(index) / logf(setSize)) + 1;
 
-    char guess[possibleLen];
+    char guess[5];
 
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       guess[guessIndex] = map((index / (int) powf(setSize, guessIndex)) % (int) setSize);
     }
 
-    if (password == RSHash(guess, possibleLen)) {
-        memcpy(retGuess, guess, possibleLen);
+    if (password == RSHash(guess, 5)) {
+        memcpy(retGuess, guess, 5);
         *found = true;
     }
   }
 }
 
+
+int RSHash_cpu(char str[], int s)
+{
+  unsigned int b = 378551;
+  unsigned int a = 63689;
+  unsigned int hash = 0;
+
+  for(int i = 0; i < s; i++)
+  {
+    hash = hash * a + str[i];
+    a    = a * b;
+  }
+
+  return (hash & 0x7FFFFFFF);
+}
+
 //Set size is 36 characters and one blank character
 int main() {
-
- 
-  
-
-  cuda_crack<<< 1, 100 >>>(ret, 10, 10, tempChar);
-  cudaDeviceSynchronize();
-
-  for(int i=0; i<100; i++)
-    printf("%d: A+B = %c\n", i, ret[i]); 
-  cudaFree(ret); 
-
-  printf("Stirng: %s\n", tempChar);
-  cudaFree(tempChar);
-    
-
-
-
-    char passwordStr[] = "aab";
+    char passwordStr[] = "aabca";
 
     int possibleLen = strlen(passwordStr);
-    int password = RSHash1(passwordStr, *possibleLen);
+    int password = RSHash_cpu(passwordStr, possibleLen);
     int setSize = 36;
 
     bool *found;
@@ -103,7 +102,7 @@ int main() {
     int numBlocks = permutations / threadsPerBlock;
 
     //<<<numBlocks, threadsPerBlock>>>
-    cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess, guessMatrix);
+    cuda_crack<<<numBlocks, threadsPerBlock>>>(password, possibleLen, setSize, found, guess);
 
     cudaDeviceSynchronize();
 
