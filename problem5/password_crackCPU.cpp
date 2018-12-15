@@ -63,8 +63,9 @@ void* crack(void* args){
   return NULL;
 }
 
-int main() {
-  char passwordStr[] = "p";
+int main(int args, const char * argv[]) {
+  char passwordStr[strlen(argv[1])];
+  memcpy(passwordStr, argv[1], strlen(argv[1]));
   int possibleLen = strlen(passwordStr);
   printf("Returned Value: %d\n", possibleLen);
 
