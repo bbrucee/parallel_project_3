@@ -47,8 +47,7 @@ __global__  void  cuda_crack(int password, int possibleLen, int setSize, bool *f
     long index = (blockIdx.x * blockDim.x + threadIdx.x) + lastIndex;
 
     long currLen = (int)(logf(index) / logf(setSize)) + 1;
-
-    char guess[6];
+    char guess[10];
 
     for (int guessIndex = 0; guessIndex < currLen; ++guessIndex) {
       guess[guessIndex] = map((index / (long) powf(setSize, guessIndex)) % setSize);
@@ -81,7 +80,7 @@ int RSHash_cpu(char str[], int s)
 int original_main() {
     char passwordStr[] = "aabca";
 
-    int possibleLen = strlen(passwordStr);
+    const int possibleLen = strlen(passwordStr);
     int password = RSHash_cpu(passwordStr, possibleLen);
     int setSize = 36;
 
