@@ -194,7 +194,7 @@ int main()
   char* passwords[] = {(char*)"p", (char*)"ar", (char*)"esd", (char*)"reds",
                       (char*)"pooty", (char*)"spoots", (char*)"paral12", (char*)"bv37qi#f"};
   for(int i=0; i<8; i++){
-    speedtest(passwords[i]);
+    speedtest((char*)"paral12");
   }
   return 0;
 }
